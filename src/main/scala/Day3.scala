@@ -25,6 +25,7 @@ object Day3 extends App {
     } yield (x, y)
   }
 
+  // Answer part 1
   println(
     claims
     .flatMap(toCoordinates)
@@ -43,5 +44,6 @@ object Day3 extends App {
     .flatMap(_.map(_._1))
     .toList
 
+  // Answer part 2
   println(claims.filter(claim => !claimsWithDuplicates.contains(claim)))
 }
