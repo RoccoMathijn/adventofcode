@@ -57,9 +57,9 @@ object Day4 extends App {
   }
 
   val eventsPerGuardMap = eventsPerGuard(events, "", Map.empty)
-  val minutesPerGuard = eventsPerGuardMap.mapValues(minutesAsleep)
 
   // Part1
+  val minutesPerGuard = eventsPerGuardMap.mapValues(minutesAsleep)
   val (guardMostAsleep, _) = minutesPerGuard.maxBy {case (_, minutes) => minutes}
   val mostPopularMinuteOfGuard = mostPopularMinute(eventsPerGuardMap(guardMostAsleep))
   println(Integer.parseInt(guardMostAsleep) * mostPopularMinuteOfGuard.minute)
