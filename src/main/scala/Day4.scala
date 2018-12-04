@@ -13,7 +13,7 @@ object Day4 extends App {
   case class BeginShiftEvent(override val timestamp: TimeStamp, guard: String) extends Event(timestamp)
 
   def parseLine(line: String): Event = {
-    val timeStamp = TimeStamp(line.slice(1,17))
+    val timeStamp = TimeStamp(line.slice(1, 17))
     val event = line.drop(19)
 
     event match {
@@ -38,29 +38,32 @@ object Day4 extends App {
     }
   }
 
+  /**
+    * This function assumes an event list of only one guard
+    */
   def minutesAsleep(events: List[Event]): Int = {
-    events.grouped(2).map{ case List(start, end) => end.timestamp.minute - start.timestamp.minute}.sum
+    events.grouped(2).map { case List(start, end) => end.timestamp.minute - start.timestamp.minute }.sum
   }
 
   case class MostPopularMinute(minute: Int, occurrences: Int)
-  def mostPopularMinute(events: List[Event]): MostPopularMinute = {
-    val tuple = events
-      .grouped(2)
-      .toList
-      .flatMap{case List(start, end) => (start.timestamp.minute until end.timestamp.minute).toList}
-      .groupBy(identity)
-      .values
-      .map(minute => minute.head -> minute.length)
-      .maxBy(_._2)
 
-    MostPopularMinute.tupled(tuple)
+  def mostPopularMinute(events: List[Event]): MostPopularMinute = {
+    val (minute, occurrences) = events
+      .grouped(2)
+      .flatMap { case Seq(start, end) => start.timestamp.minute until end.timestamp.minute }
+      .toList
+      .groupBy(identity)
+      .mapValues(_.length)
+      .maxBy { case (_, occ) => occ }
+
+    MostPopularMinute(minute, occurrences)
   }
 
   val eventsPerGuardMap = eventsPerGuard(events, "", Map.empty)
 
   // Part1
   val minutesPerGuard = eventsPerGuardMap.mapValues(minutesAsleep)
-  val (guardMostAsleep, _) = minutesPerGuard.maxBy {case (_, minutes) => minutes}
+  val (guardMostAsleep, _) = minutesPerGuard.maxBy { case (_, minutes) => minutes }
   val mostPopularMinuteOfGuard = mostPopularMinute(eventsPerGuardMap(guardMostAsleep))
   println(Integer.parseInt(guardMostAsleep) * mostPopularMinuteOfGuard.minute)
 
