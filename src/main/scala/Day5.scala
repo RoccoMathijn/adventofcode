@@ -1,34 +1,34 @@
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 import scala.io.Source
 
 object Day5 extends App {
+  val startTime = System.currentTimeMillis()
   val polymer = Source
     .fromResource("input-day5.txt")
-    .getLines
-    .mkString
+    .toList
 
-  def react(polymer: String): String = {
-    polymer.foldRight(" ")((c, acc) => {
-      val head = acc.head
-      if (head != c && head.toLower == c.toLower) acc.tail
-      else c +: acc
-    }).trim
+  def react(polymer: List[Char], acc: List[Char]): List[Char] = {
+    (polymer, acc) match {
+      case (Nil, _) => acc
+      case (c1 :: cs, Nil) => react(cs, List(c1))
+      case (c1 :: cs, c2::as) =>
+        if (c1 != c2 && c1.toLower == c2.toLower) react(cs, as)
+        else react(cs, c1 :: acc)
+    }
   }
 
-  val reactedPolymer = react(polymer)
+  val reactedPolymer = react(polymer, List.empty)
 
   // Part1
-  println(reactedPolymer.length)
+  println(s"Answer Part 1: ${reactedPolymer.length}")
 
   // Part2
-  val shortestPolymerAfterRemovingOneUnit: Future[Int] = Future.sequence(('a' to 'z').map (unit =>
-    Future {
-      react(reactedPolymer.filterNot(c => c.toLower == unit)).length
-    }
-  )).map(_.min)
+  val shortestPolymerAfterRemovingOneUnit: Int = ('a' to 'z').map (unit =>
+      react(reactedPolymer.filterNot(c => c.toLower == unit), List.empty).length
+  ).min
 
-  shortestPolymerAfterRemovingOneUnit onComplete println
+  val endTime = System.currentTimeMillis()
+  println(s"Answer Part 2: $shortestPolymerAfterRemovingOneUnit")
+  println(s"Time in ms: ${endTime - startTime}")
 
   Thread.sleep(20000)
 }
