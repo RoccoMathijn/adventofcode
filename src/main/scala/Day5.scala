@@ -10,21 +10,16 @@ object Day5 extends App {
     .head
 
   def react(polymer: String): String = {
-      polymer.foldLeft(" ")((acc, c) =>
-        if ((acc.last.isUpper == c.isLower && acc.last.toLower == c) || (acc.last.isLower == c.isUpper && acc.last.toUpper == c)) acc.init
-        else acc :+ c).trim
+    polymer.foldLeft(" ")((acc, c) =>
+      if ((acc.last.isUpper == c.isLower && acc.last.toLower == c) || (acc.last.isLower == c.isUpper && acc.last.toUpper == c)) acc.init
+      else acc :+ c).trim
   }
 
   val reactedPolymer = react(polymer)
+
   // Part1
   val lengthAfterReaction: Int = reactedPolymer.length
   println(lengthAfterReaction)
-
-  def reactOneUnit(polymer: String, unit: Char): String = {
-    polymer.toVector.foldLeft(" ")((acc, c) =>
-      if (c.toLower == unit && (acc.last.isUpper == c.isLower && acc.last.toLower == c) || (acc.last.isLower == c.isUpper && acc.last.toUpper == c)) acc.init
-      else acc :+ c).trim
-  }
 
   // Part2
   val shortestPolymerAfterRemovingOneUnit: Future[Int] = Future.sequence(('a' to 'z').map { unit =>
