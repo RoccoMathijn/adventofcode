@@ -1,3 +1,5 @@
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.io.Source
 
 object Day5 extends App {
@@ -13,20 +15,25 @@ object Day5 extends App {
         else acc :+ c).trim
   }
 
+  val reactedPolymer = react(polymer)
   // Part1
-  val lengthAfterReaction: Int = react(polymer).length
+  val lengthAfterReaction: Int = reactedPolymer.length
   println(lengthAfterReaction)
 
   def reactOneUnit(polymer: String, unit: Char): String = {
-    polymer.foldLeft(" ")((acc, c) =>
+    polymer.toVector.foldLeft(" ")((acc, c) =>
       if (c.toLower == unit && (acc.last.isUpper == c.isLower && acc.last.toLower == c) || (acc.last.isLower == c.isUpper && acc.last.toUpper == c)) acc.init
       else acc :+ c).trim
   }
 
   // Part2
-  val shortestPolymerAfterReactingOneUnit = ('a' to 'z').map { unit =>
-    polymer.filterNot(c => c.toLower == unit)
-  }.map(react).map(_.length).min
+  val shortestPolymerAfterRemovingOneUnit: Future[Int] = Future.sequence(('a' to 'z').map { unit =>
+    Future {
+      react(reactedPolymer.filterNot(c => c.toLower == unit)).length
+    }
+  }).map(_.min)
 
-  println(shortestPolymerAfterReactingOneUnit)
+  shortestPolymerAfterRemovingOneUnit onComplete println
+
+  Thread.sleep(20000)
 }
