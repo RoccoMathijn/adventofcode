@@ -29,6 +29,4 @@ object Day5 extends App {
   val endTime = System.currentTimeMillis()
   println(s"Answer Part 2: $shortestPolymerAfterRemovingOneUnit")
   println(s"Time in ms: ${endTime - startTime}")
-
-  Thread.sleep(20000)
 }
