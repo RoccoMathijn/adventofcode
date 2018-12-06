@@ -33,7 +33,7 @@ object Day6 extends App {
 
   val gridSize: Pos = Pos(coordinates.maxBy(_.pos.x).pos.x, coordinates.maxBy(_.pos.y).pos.y)
 
-  val closesCoordinatesPerPos: Seq[(Pos, Int)] = for {
+  val closestCoordinatesPerPos: Seq[(Pos, Int)] = for {
     x <- 0 to gridSize.x
     y <- 0 to gridSize.y
     coordinatesClosest = closestCoordinates(x, y)
@@ -42,12 +42,12 @@ object Day6 extends App {
     Pos(x, y) -> coordinatesClosest.head
   }
 
-  val coordinatesWithInfiniteAreas = closesCoordinatesPerPos
+  val coordinatesWithInfiniteAreas = closestCoordinatesPerPos
     .filter { case (Pos(x, y), _) => x == 0 || y == 0 || x == gridSize.x || y == gridSize.y }
     .map(_._2)
     .distinct
 
-  val biggestArea = closesCoordinatesPerPos
+  val biggestArea = closestCoordinatesPerPos
     .filterNot(x => coordinatesWithInfiniteAreas.contains(x._2)).map(_._2)
     .groupBy(identity)
     .values
