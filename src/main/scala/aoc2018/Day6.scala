@@ -5,7 +5,7 @@ import scala.io.Source
 object Day6 extends App {
   val startTime = System.currentTimeMillis()
   val coordinates = Source
-    .fromResource("input-day6.txt")
+    .fromResource("aoc2018/input-day6.txt")
     .getLines
     .toList
     .zipWithIndex

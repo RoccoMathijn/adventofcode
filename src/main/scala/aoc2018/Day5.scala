@@ -5,7 +5,7 @@ import scala.io.Source
 object Day5 extends App {
   val startTime = System.currentTimeMillis()
   val polymer = Source
-    .fromResource("input-day5.txt")
+    .fromResource("aoc2018/input-day5.txt")
     .toList
 
   def react(polymer: List[Char]): List[Char] = {

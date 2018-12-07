@@ -9,7 +9,7 @@ object Day7 extends App {
   type Graph = Seq[Edge]
 
   val steps: Graph = Source
-    .fromResource("input-day7.txt")
+    .fromResource("aoc2018/input-day7.txt")
     .getLines
     .map(parseLine)
     .toList

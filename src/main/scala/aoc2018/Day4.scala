@@ -4,7 +4,7 @@ import scala.io.Source
 
 object Day4 extends App {
   val events = Source
-    .fromResource("input-day4.txt")
+    .fromResource("aoc2018/input-day4.txt")
     .getLines()
     .toList
     .map(parseLine)
