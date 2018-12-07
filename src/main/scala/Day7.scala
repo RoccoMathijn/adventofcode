@@ -59,22 +59,22 @@ object Day7 extends App {
 
   def determineDurationWithMultipleWorkers(remainingGraph: Graph, remainingSteps: Seq[Char], taskList: Set[Task], seconds: Int): Int = {
     val finishedTasks: Set[Task] = taskList.filter(task => task.startTime + task.duration == seconds)
-    val currentTaskList: Set[Task] = taskList -- finishedTasks
+    val newRemainingSteps = remainingSteps.filterNot(task => finishedTasks.exists(_.step == task))
 
-    val newRemainingGraph: Graph = remainingGraph.filterNot(step => finishedTasks.exists(_.step == step.from))
-    val tasksThatCanBeStarted: Seq[Char] = findAvailableSteps(newRemainingGraph, remainingSteps)
-      .filterNot(step => taskList.exists(_.step == step))
-      .distinct
-
-    val availableWorkers: Int = (WORKERS - currentTaskList.size).max(0)
-
-    val newTaskList: Set[Task] = currentTaskList ++ tasksThatCanBeStarted.take(availableWorkers).map(Task(_, seconds))
-    val newRemainingTasks = remainingSteps.filterNot(task => finishedTasks.exists(_.step == task))
-
-    if (newRemainingTasks.isEmpty && newTaskList.isEmpty) {
+    if (newRemainingSteps.isEmpty) {
       seconds
     } else {
-      determineDurationWithMultipleWorkers(newRemainingGraph, newRemainingTasks, newTaskList, seconds + 1)
+      val currentTaskList: Set[Task] = taskList -- finishedTasks
+
+      val newRemainingGraph: Graph = remainingGraph.filterNot(step => finishedTasks.exists(_.step == step.from))
+      val stepsThatCanBeStarted: Seq[Char] = findAvailableSteps(newRemainingGraph, remainingSteps)
+        .filterNot(step => taskList.exists(_.step == step))
+        .distinct
+
+      val availableWorkers: Int = (WORKERS - currentTaskList.size).max(0)
+      val newTaskList: Set[Task] = currentTaskList ++ stepsThatCanBeStarted.take(availableWorkers).map(Task(_, seconds))
+
+      determineDurationWithMultipleWorkers(newRemainingGraph, newRemainingSteps, newTaskList, seconds + 1)
     }
   }
 
