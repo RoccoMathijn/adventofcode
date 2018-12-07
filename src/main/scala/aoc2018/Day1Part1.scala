@@ -1,3 +1,5 @@
+package aoc2018
+
 import scala.io.Source
 
 object Day1Part1 extends App {

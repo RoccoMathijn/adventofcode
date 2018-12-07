@@ -1,3 +1,5 @@
+package aoc2018
+
 import scala.collection.immutable
 import scala.io.Source
 
@@ -9,4 +11,3 @@ object Day1Part2 extends App {
   }
   println(loop(infiniteRunningTotal.take(1), infiniteRunningTotal.tail))
 }
-

@@ -1,3 +1,5 @@
+package aoc2018
+
 import scala.io.Source
 
 object Day7 extends App {
@@ -79,7 +81,7 @@ object Day7 extends App {
   }
 
   println(s"Answer part2: ${determineDurationWithMultipleWorkers(steps, allSteps, Set.empty, 0)}")
-  
+
   val endTime = System.currentTimeMillis()
   println(s"Runtime: ${endTime - startTime}")
 }
