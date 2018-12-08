@@ -29,11 +29,8 @@ object Day8 extends App {
 
   def parse(licenceFile: Seq[Int]): (Node, Seq[Int]) = {
     licenceFile match {
-      case 0 :: qmd :: lf =>
-        val (metaData, rem) = lf.splitAt(qmd)
-        (Node(Seq.empty, metaData), rem)
-      case c :: qmd :: lf =>
-        val (nodes, rem) = parseHorizontal(lf, c)
+      case children :: qmd :: lf =>
+        val (nodes, rem) = parseHorizontal(lf, children)
         val (metaData, rem2) = rem.splitAt(qmd)
         (Node(nodes, metaData), rem2)
     }
@@ -43,9 +40,9 @@ object Day8 extends App {
     if (children == 0) {
       (Seq.empty, licenceFile)
     } else {
-      val (nodes, rem) = parse(licenceFile)
-      val (nodes2, rem2) = parseHorizontal(rem, children - 1)
-      (nodes +: nodes2, rem2)
+      val (node, rem) = parse(licenceFile)
+      val (nodes, rem2) = parseHorizontal(rem, children - 1)
+      (node +: nodes, rem2)
     }
   }
 
