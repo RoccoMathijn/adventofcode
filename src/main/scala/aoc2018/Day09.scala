@@ -1,5 +1,8 @@
 package aoc2018
 
+/**
+  * Day09 solver using recursion and immutable data structures
+  * */
 object Day09 extends App {
   val startTime = System.currentTimeMillis()
 
