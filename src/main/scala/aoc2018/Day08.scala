@@ -2,7 +2,7 @@ package aoc2018
 
 import scala.io.Source
 
-object Day8 extends App {
+object Day08 extends App {
   val startTime = System.currentTimeMillis()
 
   val licenceFile: List[Int] = Source

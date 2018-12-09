@@ -2,7 +2,10 @@ package aoc2018
 
 import scala.collection.mutable
 
-object Day9Mutable extends App {
+/**
+  * Mutable and fast version of Day09 solver
+  * */
+object Day09V2 extends App {
   val startTime = System.currentTimeMillis()
 
   class Circle {

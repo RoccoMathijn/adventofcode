@@ -2,7 +2,7 @@ package aoc2018
 
 import scala.io.Source
 
-object Day5 extends App {
+object Day05 extends App {
   val startTime = System.currentTimeMillis()
   val polymer = Source
     .fromResource("aoc2018/input-day5.txt")

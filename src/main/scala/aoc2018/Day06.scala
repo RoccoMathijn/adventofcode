@@ -2,7 +2,7 @@ package aoc2018
 
 import scala.io.Source
 
-object Day6 extends App {
+object Day06 extends App {
   val startTime = System.currentTimeMillis()
   val coordinates = Source
     .fromResource("aoc2018/input-day6.txt")

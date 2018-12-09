@@ -1,10 +1,10 @@
 package aoc2018
 
-object Day9 extends App {
+object Day09 extends App {
   val startTime = System.currentTimeMillis()
 
   case class Circle(current: Int, clockWise: Vector[Int], length: Int) {
-    def insert(marble: Int) = clockWise match {
+    def insert(marble: Int): Circle = clockWise match {
       case Vector() => Circle(marble, Vector(current), length + 1)
       case _ => Circle(marble, clockWise.tail :+ current :+ clockWise.head, length + 1)
     }

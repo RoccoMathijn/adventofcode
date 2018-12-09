@@ -2,7 +2,7 @@ package aoc2018
 
 import scala.io.Source
 
-object Day3 extends App {
+object Day03 extends App {
   val claims = Source.fromResource("aoc2018/input-day3.txt").getLines().toList.map(parseLine)
 
   case class Claim(id: Int, x: Int, y: Int, length: Int, width: Int)

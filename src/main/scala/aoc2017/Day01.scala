@@ -1,6 +1,6 @@
 package aoc2017
 
-object Day1 extends App {
+object Day01 extends App {
   def solve(input: Seq[Int]): Int = {
     input.sliding(2).foldLeft(0){ case (acc, List(fst, snd)) => if (fst == snd) acc + fst else acc }
   }

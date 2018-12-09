@@ -4,7 +4,7 @@ import org.scalatest.WordSpec
 
 import scala.io.Source
 
-class Day1Test extends WordSpec {
+class Day01Test extends WordSpec {
   val sample1: List[Int] = Source
     .fromResource("aoc2017/input-day1-sample1.txt")
     .map(c => Integer.parseInt(c.toString))
@@ -22,15 +22,15 @@ class Day1Test extends WordSpec {
 
   "Part1" should {
     "sample1" in {
-      assert(Day1.solve(sample1 :+ sample1.head) == 3)
+      assert(Day01.solve(sample1 :+ sample1.head) == 3)
     }
 
     "sample2" in {
-      assert(Day1.solve(sample2 :+ sample2.head) == 9)
+      assert(Day01.solve(sample2 :+ sample2.head) == 9)
     }
 
     "day1" in {
-      println(Day1.solve(day1 :+ day1.head))
+      println(Day01.solve(day1 :+ day1.head))
     }
   }
 
@@ -41,11 +41,11 @@ class Day1Test extends WordSpec {
 
   "Part2" should {
     "sample1" in {
-      assert(Day1.solve2(sample3) == 6)
+      assert(Day01.solve2(sample3) == 6)
     }
 
     "day1part2" in {
-      println(Day1.solve2(day1))
+      println(Day01.solve2(day1))
     }
   }
 

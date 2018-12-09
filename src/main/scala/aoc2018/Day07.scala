@@ -2,7 +2,7 @@ package aoc2018
 
 import scala.io.Source
 
-object Day7 extends App {
+object Day07 extends App {
   val startTime = System.currentTimeMillis()
 
   case class Edge(from: Char, to: Char)

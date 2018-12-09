@@ -2,7 +2,7 @@ package aoc2018
 
 import scala.io.Source
 
-object Day4 extends App {
+object Day04 extends App {
   val events = Source
     .fromResource("aoc2018/input-day4.txt")
     .getLines()

@@ -2,7 +2,7 @@ package aoc2018
 
 import scala.io.Source
 
-object Day2Part1 extends App {
+object Day02Part1 extends App {
   val boxIds = Source.fromResource("aoc2018/input-day2.txt").getLines()
 
   val grouped: List[List[Int]] = boxIds.map(_.groupBy(c => c).values.map(_.length).toList).toList
