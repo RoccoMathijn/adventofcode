@@ -9,24 +9,19 @@ object Day02 extends App {
     .map(toLine)
     .toList
 
-
   case class Line(min: Int, max: Int, letter: Char, password: String)
 
   def toLine(input: String): Line = {
-    val min = input.takeWhile(c => c != '-').toInt
-    val max = input.dropWhile(c => c != '-').drop(1).takeWhile(c => c != ' ').toInt
-
-    val letter = input.dropWhile(c => c != ' ').drop(1).take(1).charAt(0)
-    val password = input.dropWhile(c => c != ':').drop(2)
-
-    val line = Line(min, max, letter, password)
-
-    line
+    val r = "(\\d*)-(\\d*) (\\w): (\\w*)".r
+    input match {
+      case r(min, max, letter, password) => Line(min.toInt, max.toInt, letter.head, password)
+      case _ => throw new IllegalArgumentException(s"Input value $input not valid!")
+    }
   }
 
   def isValid(line: Line): Boolean = {
     val count = line.password.count(c => c == line.letter)
-    count >= line.min  && count <= line.max
+    count >= line.min && count <= line.max
   }
 
   def isValid2(line: Line): Boolean = {
