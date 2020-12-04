@@ -21,14 +21,14 @@ object Day04 extends App {
 
   def toPassport(input: String): Option[Passport] = {
     val map = input.split(" ").map(kv => kv.split(":")).map(kv => kv(0) -> kv(1)).toMap
-    val maybebyr = map.get("byr")
-    val maybeiyr = map.get("iyr")
-    val maybeeyr = map.get("eyr")
-    val maybehgt = map.get("hgt")
-    val maybehcl = map.get("hcl")
-    val maybeecl = map.get("ecl")
-    val maybepid = map.get("pid")
-    val maybecid = map.get("cid")
+    val maybeByr = map.get("byr")
+    val maybeIyr = map.get("iyr")
+    val maybeEyr = map.get("eyr")
+    val maybeHgt = map.get("hgt")
+    val maybeHcl = map.get("hcl")
+    val maybeEcl = map.get("ecl")
+    val maybePid = map.get("pid")
+    val maybeUid = map.get("cid")
 
     val hgtRegex = "(\\d*)(cm|in)".r
     val hclRegex = "#[a-f0-9]{6}"
@@ -36,10 +36,10 @@ object Day04 extends App {
     val pidRegex = "\\d{9}"
 
     for {
-      byr <- maybebyr.filter(b => b.toInt >= 1920 && b.toInt <= 2002)
-      iyr <- maybeiyr.filter(i => i.toInt >= 2010 && i.toInt <= 2020)
-      eyr <- maybeeyr.filter(b => b.toInt >= 2020 && b.toInt <= 2030)
-      hgt <- maybehgt.filter { hgt =>
+      byr <- maybeByr.filter(b => b.toInt >= 1920 && b.toInt <= 2002)
+      iyr <- maybeIyr.filter(i => i.toInt >= 2010 && i.toInt <= 2020)
+      eyr <- maybeEyr.filter(b => b.toInt >= 2020 && b.toInt <= 2030)
+      hgt <- maybeHgt.filter { hgt =>
         hgt match {
           case hgtRegex(height, unit) =>
             unit match {
@@ -50,11 +50,11 @@ object Day04 extends App {
           case _ => false
         }
       }
-      hcl <- maybehcl.filter(h => h.matches(hclRegex))
-      ecl <- maybeecl.filter(e => e.matches(eclRegex))
-      pid <- maybepid.filter(p => p.matches(pidRegex))
+      hcl <- maybeHcl.filter(h => h.matches(hclRegex))
+      ecl <- maybeEcl.filter(e => e.matches(eclRegex))
+      pid <- maybePid.filter(p => p.matches(pidRegex))
     } yield {
-      Passport(byr, iyr, eyr, hgt, hcl, ecl, pid, maybecid)
+      Passport(byr, iyr, eyr, hgt, hcl, ecl, pid, maybeUid)
     }
 
   }
