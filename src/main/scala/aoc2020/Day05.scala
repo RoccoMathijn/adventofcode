@@ -14,14 +14,6 @@ object Day05 extends App {
     Integer.parseInt(input, 2)
   }
 
-  def toRow(input: String): Int = {
-    toInt(input.take(7))
-  }
-
-  def toColumn(input: String): Int = {
-    toInt(input.drop(7))
-  }
-
   def toBin(input:String): String = {
     input.map {
       case 'F' => 0
@@ -32,8 +24,8 @@ object Day05 extends App {
   }
 
   def toId(input: String): Int = {
-    val row = toRow(input)
-    val column = toColumn(input)
+    val row = toInt(input.take(7))
+    val column = toInt(input.drop(7))
 
     row*8+column
   }
