@@ -4,11 +4,45 @@ import scala.collection.immutable
 import scala.io.Source
 
 object Day05 extends App {
-  val input: immutable.Seq[Int] = Source
+  val input: immutable.Seq[String] = Source
     .fromResource("aoc2020/input-day5.txt")
     .getLines()
-    .map(_.toInt)
+    .map(toBin)
     .toList
 
+  def toInt(input: String): Int = {
+    Integer.parseInt(input, 2)
+  }
+
+  def toRow(input: String): Int = {
+    toInt(input.take(7))
+  }
+
+  def toColumn(input: String): Int = {
+    toInt(input.drop(7))
+  }
+
+  def toBin(input:String): String = {
+    input.map {
+      case 'F' => 0
+      case 'B' => 1
+      case 'R' => 1
+      case 'L' => 0
+    }.mkString
+  }
+
+  def toId(input: String): Int = {
+    val row = toRow(input)
+    val column = toColumn(input)
+
+    row*8+column
+  }
+
+  println(input.map(toId).max)
+
+  input.map(toId).sorted.foldLeft(79){(acc,i) =>
+    if (i != acc + 1) println(acc)
+    i
+  }
 
 }
