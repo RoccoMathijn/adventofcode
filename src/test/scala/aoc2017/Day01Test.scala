@@ -1,10 +1,10 @@
 package aoc2017
 
-import org.scalatest.WordSpec
+import org.scalatest.wordspec.AnyWordSpec
 
 import scala.io.Source
 
-class Day01Test extends WordSpec {
+class Day01Test extends AnyWordSpec {
   val sample1: List[Int] = Source
     .fromResource("aoc2017/input-day1-sample1.txt")
     .map(c => Integer.parseInt(c.toString))

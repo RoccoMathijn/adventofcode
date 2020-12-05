@@ -1,5 +1,6 @@
 package aoc2018
 
+import scala.annotation.tailrec
 import scala.io.Source
 
 object Day02Part2 extends App {
@@ -11,7 +12,8 @@ object Day02Part2 extends App {
   } yield (x,y)
 
 
-  def commonLettersAtPos(x: String, y: String) = {
+  def commonLettersAtPos(x: String, y: String): String = {
+    @tailrec
     def loop(x: String, y: String, acc: String): String = {
       if (x.nonEmpty) {
         if (x.head == y.head) {
@@ -26,6 +28,6 @@ object Day02Part2 extends App {
     loop(x, y, "")
   }
 
-  println(pairs.map(commonLettersAtPos _ tupled).filter(_.length == 25))
+  println(pairs.map((commonLettersAtPos _).tupled).filter(_.length == 25))
 
 }
