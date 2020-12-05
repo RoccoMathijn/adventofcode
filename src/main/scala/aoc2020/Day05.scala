@@ -15,18 +15,9 @@ object Day05 extends App {
 
   def toBin(input: String): String = {
     input.map {
-      case 'F' => 0
-      case 'B' => 1
-      case 'R' => 1
-      case 'L' => 0
+      case 'F' | 'L' => 0
+      case 'B' | 'R' => 1
     }.mkString
-  }
-
-  def toId(input: String): Int = {
-    val row = toInt(input.take(7))
-    val column = toInt(input.drop(7))
-
-    row * 8 + column
   }
 
   println(input.max)
@@ -35,5 +26,4 @@ object Day05 extends App {
     if (i != acc + 1) println(acc)
     i
   }
-
 }
