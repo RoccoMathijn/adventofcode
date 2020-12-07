@@ -34,12 +34,10 @@ object Day07 extends App {
     }
   }
 
-  def countContent(color: String, acc: Int): Int = {
-    val contents = colorMap(color)
-    if (contents.isEmpty) acc
-    else contents.map { case (i, color) => acc + i * (1 + countContent(color, 0)) }.sum
+  def countContent(color: String): Int = {
+    colorMap(color).map { case (i, color) => i * (1 + countContent(color)) }.sum
   }
 
   println(colorMap.keys.count(containsShinyGold))
-  println(countContent("shiny gold", 0))
+  println(countContent("shiny gold"))
 }
