@@ -1,47 +1,67 @@
 package aoc2020
 
 import scala.annotation.tailrec
-import scala.collection.mutable.ListBuffer
+import scala.collection.View
 import scala.io.Source
 
 object Day08 extends App {
-  val input: Seq[Instruction] = Source
+  val input: List[String] = Source
     .fromResource("aoc2020/input-day8.txt")
     .getLines()
     .toList
-    .map { l =>
-      val split = l.split(' ')
-      Instruction(split(0), split(1).toInt)
+
+  val instructions: Seq[Instruction] = input
+    .map(parseLine)
+
+  private def parseLine(l: String): Instruction = {
+    val split = l.split(' ')
+    split(0) match {
+      case "nop" => Nop(split(1).toInt)
+      case "acc" => Acc(split(1).toInt)
+      case "jmp" => Jmp(split(1).toInt)
     }
+  }
 
-  case class Instruction(operation: String, argument: Int)
+  sealed trait Instruction {
+    def interpret(state: State): State = {
+      this match {
+        case Nop(_)   => state.copy(pointer = state.pointer + 1)
+        case Acc(arg) => state.copy(pointer = state.pointer + 1, acc = state.acc + arg)
+        case Jmp(arg) => state.copy(pointer = state.pointer + arg, acc = state.acc)
+      }
+    }
+  }
+  case class Nop(arg: Int) extends Instruction
+  case class Acc(arg: Int) extends Instruction
+  case class Jmp(arg: Int) extends Instruction
 
-  @tailrec
-  def run(input: Seq[Instruction], history: List[Int] = List.empty, pointer: Int = 0, acc: Int = 0): Either[Int, Int] = {
-    if (pointer == input.size) Right(acc)
-    else if (history.contains(pointer)) Left(acc)
-    else {
-      input(pointer).operation match {
-        case "nop" => run(input, history :+ pointer, pointer + 1, acc)
-        case "acc" => run(input, history :+ pointer, pointer + 1, acc + input(pointer).argument)
-        case "jmp" => run(input, history :+ pointer, pointer + input(pointer).argument, acc)
+  sealed trait Result
+  case class Looped(result: Int) extends Result
+  case class Terminated(result: Int) extends Result
+
+  case class State(pointer: Int, acc: Int)
+  case object State {
+    val empty: State = State(0, 0)
+  }
+
+  case class Program(instructions: Seq[Instruction]) {
+    @tailrec
+    final def run(state: State = State.empty, history: Set[Int] = Set.empty): Result = {
+      state match {
+        case State(pointer, acc) if pointer == input.size     => Terminated(acc)
+        case State(pointer, acc) if history.contains(pointer) => Looped(acc)
+        case State(pointer, _)                                => run(instructions(pointer).interpret(state), history + pointer)
       }
     }
   }
 
-  def permutations(input: Seq[Instruction]): Seq[Seq[Instruction]] = {
-    var permutations = new ListBuffer[Seq[Instruction]].empty
-    for (i <- input.indices) {
-      val instruction: Instruction = input(i)
-      instruction.operation match {
-        case "jmp" => permutations += input.patch(i, List(Instruction("nop", instruction.argument)), 1)
-        case "nop" => permutations += input.patch(i, List(Instruction("jmp", instruction.argument)), 1)
-        case _     =>
-      }
+  def permutations(input: Seq[Instruction]): View[Seq[Instruction]] = {
+    input.zipWithIndex.view.collect {
+      case (Jmp(argument), i) => input.updated(i, Nop(argument))
+      case (Nop(argument), i) => input.updated(i, Jmp(argument))
     }
-    permutations.toSeq
   }
 
-  println(run(input))
-  println(permutations(input).map(run(_)).filter(_.isRight))
+  println(Program(instructions).run())
+  permutations(instructions).map(Program(_).run()).collectFirst { case res: Terminated => println(res) }
 }
