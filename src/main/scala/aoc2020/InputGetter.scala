@@ -14,16 +14,17 @@ object InputGetter {
 
   @tailrec
   def get(day: Int, mode: Mode): Seq[String] = {
-    val target: Path = os.pwd / "src" / "main" / "resources" / "aoc2020" / f"input-day$day.txt"
-    val examplePath = Path(target.wrapped.getParent) / f"input-day$day-example.txt"
-    if (os.exists(target)) {
+    val targetPath: Path = os.pwd / "src" / "main" / "resources" / "aoc2020" / f"input-day$day.txt"
+    val examplePath: Path = Path(targetPath.wrapped.getParent) / f"input-day$day-example.txt"
+
+    if (os.exists(targetPath)) {
       mode match {
-        case Live    => os.read.lines(target)
+        case Live    => os.read.lines(targetPath)
         case Example => os.read.lines(examplePath)
       }
     } else {
       println("Downloading day " + day)
-      os.write(target, requests.get.stream(s"https://adventofcode.com/2020/day/$day/input", check = true, cookieValues = Map("session" -> session)))
+      os.write(targetPath, requests.get.stream(s"https://adventofcode.com/2020/day/$day/input", check = true, cookieValues = Map("session" -> session)))
       os.write(examplePath, "")
       get(day, mode)
     }

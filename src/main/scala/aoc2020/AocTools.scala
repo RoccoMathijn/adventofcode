@@ -8,5 +8,5 @@ abstract class AocTools(val day: Int) {
 
   def inputInts(mode: Mode): List[Int] = inputLines(mode).map(_.toInt)
 
-  def inputBlob(mode: Mode) = inputLines(mode).mkString("\n")
+  def inputBlob(mode: Mode): String = inputLines(mode).mkString("\n")
 }
