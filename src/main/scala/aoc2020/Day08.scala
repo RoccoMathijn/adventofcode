@@ -39,7 +39,7 @@ object Day08 extends App {
         case _     =>
       }
     }
-    permutations.toList
+    permutations.toSeq
   }
 
   println(run(input))
