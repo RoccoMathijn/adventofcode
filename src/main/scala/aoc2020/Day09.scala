@@ -1,7 +1,9 @@
 package aoc2020
 
-object Day09 extends AocTools(9) {
+import aoc2020.InputGetter._
 
+object Day09 extends AocTools(9) {
+  inputLines(Example)
   def main(args: Array[String]): Unit = {
     println(s"AOC 2020 - Day $day")
     val part1 = ???
