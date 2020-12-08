@@ -29,16 +29,19 @@ object Day08 extends App {
     }
   }
 
-  var permutations = new ListBuffer[Seq[Instruction]].empty
-  for (i <- input.indices) {
-    val instruction: Instruction = input(i)
-    instruction.operation match {
-      case "jmp" => permutations += input.patch(i, List(Instruction("nop", instruction.argument)), 1)
-      case "nop" => permutations += input.patch(i, List(Instruction("jmp", instruction.argument)), 1)
-      case _     =>
+  def permutations(input: Seq[Instruction]): Seq[Seq[Instruction]] = {
+    var permutations = new ListBuffer[Seq[Instruction]].empty
+    for (i <- input.indices) {
+      val instruction: Instruction = input(i)
+      instruction.operation match {
+        case "jmp" => permutations += input.patch(i, List(Instruction("nop", instruction.argument)), 1)
+        case "nop" => permutations += input.patch(i, List(Instruction("jmp", instruction.argument)), 1)
+        case _     =>
+      }
     }
+    permutations.toList
   }
 
   println(run(input))
-  println(permutations.map(run(_)).filter(_.isRight))
+  println(permutations(input).map(run(_)).filter(_.isRight))
 }
