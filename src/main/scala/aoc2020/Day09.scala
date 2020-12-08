@@ -1,14 +1,12 @@
 package aoc2020
 
-import scala.collection.immutable
-import scala.io.Source
+object Day09 extends AocTools(9) {
 
-object Day09 extends App {
-  val input: immutable.Seq[Int] = Source
-    .fromResource("aoc2020/input-day9.txt")
-    .getLines()
-    .map(_.toInt)
-    .toList
-
-
+  def main(args: Array[String]): Unit = {
+    println(s"AOC 2020 - Day $day")
+    val part1 = ???
+    val part2 = ???
+    println(s"Answer part 1: $part1")
+    println(s"Answer part 2: $part2")
+  }
 }

@@ -2,15 +2,9 @@ package aoc2020
 
 import scala.annotation.tailrec
 import scala.collection.View
-import scala.io.Source
 
-object Day08 extends App {
-  val input: List[String] = Source
-    .fromResource("aoc2020/input-day8.txt")
-    .getLines()
-    .toList
-
-  val instructions: Seq[Instruction] = input
+object Day08 extends AocTools(8) {
+  val instructions: Seq[Instruction] = inputLines
     .map(parseLine)
 
   private def parseLine(l: String): Instruction = {
@@ -48,9 +42,9 @@ object Day08 extends App {
     @tailrec
     final def run(state: State = State.empty, history: Set[Int] = Set.empty): Result = {
       state match {
-        case State(pointer, acc) if pointer == input.size     => Terminated(acc)
-        case State(pointer, acc) if history.contains(pointer) => Looped(acc)
-        case State(pointer, _)                                => run(instructions(pointer).interpret(state), history + pointer)
+        case State(pointer, acc) if pointer == instructions.size => Terminated(acc)
+        case State(pointer, acc) if history.contains(pointer)    => Looped(acc)
+        case State(pointer, _)                                   => run(instructions(pointer).interpret(state), history + pointer)
       }
     }
   }
@@ -62,6 +56,13 @@ object Day08 extends App {
     }
   }
 
-  println(Program(instructions).run())
-  permutations(instructions).map(Program(_).run()).collectFirst { case res: Terminated => println(res) }
+  def main(args: Array[String]): Unit = {
+    println(s"AOC 2020 - Day $day")
+
+    val part1 = Program(instructions).run()
+    val part2 = permutations(instructions).map(Program(_).run()).collectFirst { case res: Terminated => res }
+
+    println(s"Answer part 1: $part1")
+    println(s"Answer part 2: $part2")
+  }
 }
