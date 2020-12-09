@@ -5,9 +5,12 @@ import aoc2020.InputGetter._
 object Day09 extends AocTools(9) {
 //  implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
-  val preambleLength = 25
 
-  val input = inputLongs
+  private val input = inputLongs
+  private val preambleLength = mode match {
+    case InputGetter.Live    => 25
+    case InputGetter.Example => 5
+  }
 
   def sumNext(target: Long, contigious: Seq[Long], pointer: Int): Option[Seq[Long]] = {
     if (contigious.sum == target) Some(contigious)
