@@ -13,9 +13,11 @@ object Day09 extends AocTools(9) {
   }
 
   def findContigious(target: Long, sequence: Seq[Long], pointer: Int): Option[Seq[Long]] = {
-    if (sequence.sum == target) Some(sequence)
-    else if (sequence.sum > target) None
-    else findContigious(target, sequence :+ input(pointer), pointer + 1)
+    sequence.sum match {
+      case sum if sum == target => Some(sequence)
+      case sum if sum > target  => None
+      case _                    => findContigious(target, sequence :+ input(pointer), pointer + 1)
+    }
   }
 
   def main(args: Array[String]): Unit = {
