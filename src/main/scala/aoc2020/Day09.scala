@@ -36,7 +36,7 @@ object Day09 extends AocTools(9) {
 
     println(s"Answer part 1: $part1")
 
-    val part2: Option[Long] = input.indices
+    val part2: Option[Long] = input.indices.view
       .map { findContigious(part1.get, Seq.empty, _) }
       .collectFirst { case Some(contigious) => contigious.min + contigious.max }
 
