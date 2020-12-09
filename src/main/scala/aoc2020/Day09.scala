@@ -1,8 +1,9 @@
 package aoc2020
 
-import aoc2020.InputGetter._
+import util.InputGetter.{Live, Mode}
+import util.{AocTools, InputGetter}
 
-object Day09 extends AocTools(9) {
+object Day09 extends AocTools(9, 2020) {
 //  implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
 

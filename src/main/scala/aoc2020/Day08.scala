@@ -1,11 +1,12 @@
 package aoc2020
 
-import aoc2020.InputGetter._
+import util.AocTools
+import util.InputGetter.Live
 
 import scala.annotation.tailrec
 import scala.collection.View
 
-object Day08 extends AocTools(8) {
+object Day08 extends AocTools(8, 2020) {
   val instructions: Seq[Instruction] = inputLines(Live)
     .map(parseLine)
 

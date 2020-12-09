@@ -1,10 +1,10 @@
-package aoc2020
+package util
 
-import aoc2020.InputGetter.Mode
+import util.InputGetter.Mode
 
-abstract class AocTools(val day: Int) {
+abstract class AocTools(val day: Int, year: Int) {
 
-  def inputLines(implicit mode: Mode): List[String] = InputGetter.get(day, mode).toList
+  def inputLines(implicit mode: Mode): List[String] = InputGetter.get(day, year, mode).toList
 
   def inputInts(implicit mode: Mode): Seq[Int] = inputLines(mode).map(_.toInt)
 

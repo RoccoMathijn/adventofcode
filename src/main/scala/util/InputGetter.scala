@@ -1,4 +1,4 @@
-package aoc2020
+package util
 
 import os.Path
 
@@ -13,8 +13,8 @@ object InputGetter {
   private val session = sys.env("SESSIONID")
 
   @tailrec
-  def get(day: Int, mode: Mode): Seq[String] = {
-    val targetPath: Path = os.pwd / "src" / "main" / "resources" / "aoc2020" / f"input-day$day.txt"
+  def get(day: Int, year: Int, mode: Mode): Seq[String] = {
+    val targetPath: Path = os.pwd / "src" / "main" / "resources" / s"aoc$year" / s"input-day$day.txt"
     val examplePath: Path = Path(targetPath.wrapped.getParent) / f"input-day$day-example.txt"
 
     if (os.exists(targetPath)) {
@@ -24,9 +24,9 @@ object InputGetter {
       }
     } else {
       println("Downloading day " + day)
-      os.write(targetPath, requests.get.stream(s"https://adventofcode.com/2020/day/$day/input", check = true, cookieValues = Map("session" -> session)))
+      os.write(targetPath, requests.get.stream(s"https://adventofcode.com/$year/day/$day/input", check = true, cookieValues = Map("session" -> session)))
       os.write(examplePath, "")
-      get(day, mode)
+      get(day, year, mode)
     }
   }
 }
