@@ -1,3 +1,5 @@
 .idea
 **/target
 .env
+**/input-day**.txt
+!**/input-day*-example.txt
