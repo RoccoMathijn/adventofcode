@@ -12,16 +12,16 @@ object Day09 extends AocTools(9) {
     case InputGetter.Example => 5
   }
 
-  def sumNext(target: Long, contigious: Seq[Long], pointer: Int): Option[Seq[Long]] = {
-    if (contigious.sum == target) Some(contigious)
-    else if (contigious.sum > target) None
-    else sumNext(target, contigious :+ input(pointer), pointer + 1)
+  def findContigious(target: Long, sequence: Seq[Long], pointer: Int): Option[Seq[Long]] = {
+    if (sequence.sum == target) Some(sequence)
+    else if (sequence.sum > target) None
+    else findContigious(target, sequence :+ input(pointer), pointer + 1)
   }
 
   def main(args: Array[String]): Unit = {
     println(s"AOC 2020 - Day $day")
 
-    val part1 = input.view.zipWithIndex
+    val part1: Option[Long] = input.view.zipWithIndex
       .drop(preambleLength)
       .find { x =>
         val preamble = input.slice(x._2 - preambleLength, x._2)
@@ -37,11 +37,8 @@ object Day09 extends AocTools(9) {
     println(s"Answer part 1: $part1")
 
     val part2: Option[Long] = input.indices
-      .map(sumNext(part1.get, Seq.empty, _))
-      .find(_.isDefined)
-      .flatMap(_.map { contigious =>
-        contigious.min + contigious.max
-      })
+      .map { findContigious(part1.get, Seq.empty, _) }
+      .collectFirst { case Some(contigious) => contigious.min + contigious.max }
 
     println(s"Answer part 2: $part2")
   }
