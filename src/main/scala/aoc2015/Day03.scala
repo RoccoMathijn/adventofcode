@@ -6,7 +6,8 @@ import util.InputGetter.{Example, Live}
 object Day03 extends AocTools(3, 2015) {
 //  implicit val mode = Example
   implicit val mode = Live
-  val input = inputLines.map(_.toList).head
+  val input: List[Char] = inputLines.map(_.toList).head
+
   def visit(input: List[Char], currentLocation: (Int, Int), houses: Map[(Int, Int), Int]): Map[(Int, Int), Int] = {
     if (input.isEmpty) houses
     else {
@@ -20,11 +21,16 @@ object Day03 extends AocTools(3, 2015) {
       visit(input.tail, newLocation, houses.updated(newLocation, gifts))
     }
   }
+
   def main(args: Array[String]): Unit = {
-    println(visit(input, (0, 0), Map.empty).size)
+    val startPos = (0, 0)
+    val startMap = Map(startPos -> 1)
+    println(visit(input, startPos, startMap).size)
+
     val (santaInput, roboInput) = input.zipWithIndex.partition(_._2 % 2 == 0)
-    val santaMap = visit(santaInput.map(_._1), (0, 0), Map((0, 0) -> 1))
-    val roboMap = visit(roboInput.map(_._1), (0, 0), santaMap)
-    println(roboMap.size)
+    val santaHouses = visit(santaInput.map(_._1), startPos, startMap)
+    val combined = visit(roboInput.map(_._1), startPos, santaHouses)
+
+    println(combined.size)
   }
 }
