@@ -75,11 +75,11 @@ object Day11 extends AocTools(11, 2020) {
   //  Here be dragons
   def visibleSeats(position: (Int, Int), layout: Layout): List[Position] = {
     val column = layout.map(_(position._1))
-    val up: Option[Position] = column.take(position._2).reverse.find(!_.isInstanceOf[Floor])
-    val down: Option[Position] = column.drop(position._2 + 1).find(!_.isInstanceOf[Floor])
+    val up = column.take(position._2).reverse.find(!_.isInstanceOf[Floor])
+    val down = column.drop(position._2 + 1).find(!_.isInstanceOf[Floor])
     val row = layout(position._2)
-    val left: Option[Position] = row.take(position._1).reverse.find(!_.isInstanceOf[Floor])
-    val right: Option[Position] = row.drop(position._1 + 1).find(!_.isInstanceOf[Floor])
+    val left = row.take(position._1).reverse.find(!_.isInstanceOf[Floor])
+    val right = row.drop(position._1 + 1).find(!_.isInstanceOf[Floor])
 
     val lu = upL(position, List.empty).map(p => layout(p._2)(p._1)).find(!_.isInstanceOf[Floor])
     val ru = upR(position, List.empty).map(p => layout(p._2)(p._1)).find(!_.isInstanceOf[Floor])
