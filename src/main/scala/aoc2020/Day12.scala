@@ -9,47 +9,45 @@ object Day12 extends AocTools(12, 2020) {
 //  implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
 
-  def parseLine(line: String): Instruction = {
-    val instruction = line.head
-    val value = line.tail.toInt
-    instruction match {
-      case 'N' => N(value)
-      case 'S' => S(value)
-      case 'E' => E(value)
-      case 'W' => W(value)
-      case 'L' => L(value)
-      case 'R' => R(value)
-      case 'F' => F(value)
-    }
-  }
+  def parseLine(line: String): Instruction = Instruction(line.head, line.tail.toInt)
   val input: List[Instruction] = inputLines.map(parseLine)
 
-  sealed trait Instruction {
-    val value: Int
-  }
-  case class N(value: Int) extends Instruction
-  case class S(value: Int) extends Instruction
-  case class E(value: Int) extends Instruction
-  case class W(value: Int) extends Instruction
-  case class L(value: Int) extends Instruction
-  case class R(value: Int) extends Instruction
-  case class F(value: Int) extends Instruction
-
+  case class Instruction(command: Char, value: Int)
   case class State(location: (Int, Int), direction: Char, wayPoint: (Int, Int))
 
   @tailrec
   def run(input: List[Instruction], state: State): State = {
-    if (input.isEmpty) state
-    else {
-      input.head match {
-        case N(value) => run(input.tail, state.copy(location = state.location._1 -> (state.location._2 + value)))
-        case S(value) => run(input.tail, state.copy(location = state.location._1 -> (state.location._2 - value)))
-        case E(value) => run(input.tail, state.copy(location = (state.location._1 + value) -> state.location._2))
-        case W(value) => run(input.tail, state.copy(location = (state.location._1 - value) -> state.location._2))
-        case L(value) => run(input.tail, state.copy(direction = rotateL(state.direction, value)))
-        case R(value) => run(input.tail, state.copy(direction = rotateR(state.direction, value)))
-        case F(value) => run(parseLine(s"${state.direction}${value.toString}") +: input.tail, state)
-      }
+    input match {
+      case Nil => state
+      case x :: xs =>
+        x match {
+          case Instruction('N', value) => run(xs, state.copy(location = state.location._1 -> (state.location._2 + value)))
+          case Instruction('S', value) => run(xs, state.copy(location = state.location._1 -> (state.location._2 - value)))
+          case Instruction('E', value) => run(xs, state.copy(location = (state.location._1 + value) -> state.location._2))
+          case Instruction('W', value) => run(xs, state.copy(location = (state.location._1 - value) -> state.location._2))
+          case Instruction('L', value) => run(xs, state.copy(direction = rotateL(state.direction, value)))
+          case Instruction('R', value) => run(xs, state.copy(direction = rotateR(state.direction, value)))
+          case Instruction('F', value) => run(Instruction(state.direction, value) :: xs, state)
+        }
+    }
+  }
+
+  @tailrec
+  def runWithWayPoint(input: List[Instruction], state: State): State = {
+    input match {
+      case Nil => state
+      case x :: xs =>
+        x match {
+          case Instruction('N', value) => runWithWayPoint(xs, state.copy(wayPoint = state.wayPoint._1 -> (state.wayPoint._2 + value)))
+          case Instruction('S', value) => runWithWayPoint(xs, state.copy(wayPoint = state.wayPoint._1 -> (state.wayPoint._2 - value)))
+          case Instruction('E', value) => runWithWayPoint(xs, state.copy(wayPoint = (state.wayPoint._1 + value) -> state.wayPoint._2))
+          case Instruction('W', value) => runWithWayPoint(xs, state.copy(wayPoint = (state.wayPoint._1 - value) -> state.wayPoint._2))
+          case Instruction('L', value) => runWithWayPoint(xs, state.copy(wayPoint = rotateWayPointL(state.wayPoint, value)))
+          case Instruction('R', value) => runWithWayPoint(xs, state.copy(wayPoint = rotateWayPointR(state.wayPoint, value)))
+          case Instruction('F', value) =>
+            val newLocation = (state.wayPoint._1 * value + state.location._1, state.wayPoint._2 * value + state.location._2)
+            runWithWayPoint(xs, state.copy(location = newLocation))
+        }
     }
   }
 
@@ -76,25 +74,6 @@ object Day12 extends AocTools(12, 2020) {
     if (degrees == 0) wayPoint
     else {
       rotateWayPointR(wayPoint._2 -> -wayPoint._1, degrees - 90)
-    }
-  }
-
-  @tailrec
-  def runWithWayPoint(input: List[Instruction], state: State): State = {
-    input match {
-      case Nil => state
-      case x :: xs =>
-        x match {
-          case N(value) => runWithWayPoint(xs, state.copy(wayPoint = state.wayPoint._1 -> (state.wayPoint._2 + value)))
-          case S(value) => runWithWayPoint(xs, state.copy(wayPoint = state.wayPoint._1 -> (state.wayPoint._2 - value)))
-          case E(value) => runWithWayPoint(xs, state.copy(wayPoint = (state.wayPoint._1 + value) -> state.wayPoint._2))
-          case W(value) => runWithWayPoint(xs, state.copy(wayPoint = (state.wayPoint._1 - value) -> state.wayPoint._2))
-          case L(value) => runWithWayPoint(xs, state.copy(wayPoint = rotateWayPointL(state.wayPoint, value)))
-          case R(value) => runWithWayPoint(xs, state.copy(wayPoint = rotateWayPointR(state.wayPoint, value)))
-          case F(value) =>
-            val newLocation = (state.wayPoint._1 * value + state.location._1, state.wayPoint._2 * value + state.location._2)
-            runWithWayPoint(xs, state.copy(location = newLocation))
-        }
     }
   }
 
