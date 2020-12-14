@@ -3,13 +3,14 @@ package aoc2020
 import util.AocTools
 import util.InputGetter.{Example, Live, Mode}
 
+import scala.annotation.tailrec
 import scala.util.matching.Regex
 
 object Day14 extends AocTools(14, 2020) {
 //  implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
 
-  val allocationPattern: Regex = "mem\\[(\\d+)\\] = (\\d+)".r
+  val allocationPattern: Regex = "mem[(\\d+)] = (\\d+)".r
   val maskPattern: Regex = "mask = (\\w+)".r
 
   sealed trait Instruction
@@ -41,6 +42,7 @@ object Day14 extends AocTools(14, 2020) {
     (BigInt(a >>> 1) << 1) + (a & 1)
   }
 
+  @tailrec
   def runProgram(input: Seq[Instruction], currMask: String, memory: Map[Long, Long], part2: Boolean): Map[Long, Long] =
     input match {
       case Nil               => memory
