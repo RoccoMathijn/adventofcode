@@ -10,7 +10,7 @@ object Day14 extends AocTools(14, 2020) {
 //  implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
 
-  val allocationPattern: Regex = "mem[(\\d+)] = (\\d+)".r
+  val allocationPattern: Regex = "mem\\[(\\d+)\\] = (\\d+)".r
   val maskPattern: Regex = "mask = (\\w+)".r
 
   sealed trait Instruction
