@@ -58,13 +58,18 @@ object Day14 extends AocTools(14, 2020) {
 
   def main(args: Array[String]): Unit = {
     println(s"AOC 2020 - Day $day")
+    val start = System.currentTimeMillis()
 
-    val memory1 = runProgram(input, "", Map.empty[Long, Long], part2 = false)
+    val memory1 = runProgram(input, currMask = "", memory = Map.empty[Long, Long], part2 = false)
     val part1: BigInt = memory1.values.map(unsignedLong).sum
     println(s"Answer part 1: $part1")
+    val mid = System.currentTimeMillis()
+    println(s"Calculation time part 1: ${mid - start}ms\n")
 
-    val memory2 = runProgram(input, "", Map.empty[Long, Long], part2 = true)
+    val memory2 = runProgram(input, currMask = "", memory = Map.empty[Long, Long], part2 = true)
     val part2 = memory2.values.map(unsignedLong).sum
     println(s"Answer part 2: $part2")
+    val end = System.currentTimeMillis()
+    println(s"Calculation time part 2: ${`end` - mid}ms")
   }
 }
