@@ -1,11 +1,10 @@
 package aoc2020
 
 import util.AocTools
-import util.InputGetter.{Example, Live, Mode}
+import util.InputGetter.{Live, Mode}
 
 import scala.annotation.tailrec
 import scala.collection.mutable
-import scala.util.matching.Regex
 
 object Day17 extends AocTools(17, 2020) {
 //  implicit private val mode: Mode = Example
@@ -14,31 +13,33 @@ object Day17 extends AocTools(17, 2020) {
   val input: Seq[String] = inputLines
   type Position = (Int, Int, Int, Int)
 
-  type PocketDimension = Set[(Int, Int, Int, Int)]
+  type PocketDimension = Set[Position]
   val initialState: PocketDimension = input.zipWithIndex.flatMap {
     case (line, y) =>
-      line.toCharArray.zipWithIndex.flatMap {
-        case (c, x) =>
-          if (c == '#') Some((x, y, 0, 0))
-          else None
+      line.toCharArray.zipWithIndex.collect {
+        case (c, x) if c == '#' => (x, y, 0, 0)
       }
   }.toSet
 
-  def neighBours(position: Position): Seq[(Int, Int, Int, Int)] = {
-    (for {
-      x <- -1 to 1
-      y <- -1 to 1
-      z <- -1 to 1
-      w <- -1 to 1
-      if !(x == 0 && y == 0 && z == 0 && w == 0)
-    } yield (position._1 + x, position._2 + y, position._3 + z, position._4 + w))
+  val neighbourMap: mutable.Map[Position, Seq[Position]] = mutable.Map.empty
+  def neighbours(position: Position): Seq[Position] = {
+    neighbourMap.getOrElse(
+      position, {
+        val neighbours = for {
+          x <- -1 to 1
+          y <- -1 to 1
+          z <- -1 to 1
+          w <- -1 to 1
+          if !(x == 0 && y == 0 && z == 0 && w == 0)
+        } yield (position._1 + x, position._2 + y, position._3 + z, position._4 + w)
+
+        neighbourMap.update(position, neighbours)
+        neighbours
+      }
+    )
   }
 
-  def countActiveNeighbours(position: Position, pocketDimension: PocketDimension): Int = {
-    neighBours(position).count(pocketDimension.contains)
-  }
-
-  def allConsiderablePositions(pocketDimension: PocketDimension): Seq[(Int, Int, Int, Int)] = {
+  def allConsiderablePositions(pocketDimension: PocketDimension): Seq[Position] = {
     val minX = pocketDimension.minBy(_._1)._1 - 1
     val minY = pocketDimension.minBy(_._2)._2 - 1
     val minZ = pocketDimension.minBy(_._3)._3 - 1
@@ -58,7 +59,7 @@ object Day17 extends AocTools(17, 2020) {
 
   def runOnce(pocketDimension: PocketDimension): PocketDimension = {
     allConsiderablePositions(pocketDimension).flatMap { position =>
-      val activeNeighbours = countActiveNeighbours(position, pocketDimension)
+      val activeNeighbours = neighbours(position).count(pocketDimension.contains)
       if (pocketDimension(position)) {
         if (activeNeighbours == 2 || activeNeighbours == 3)
           Some(position)
@@ -78,7 +79,7 @@ object Day17 extends AocTools(17, 2020) {
   def runSixCycles(pocketDimension: PocketDimension, cycle: Int): PocketDimension = {
     if (cycle == 6) pocketDimension
     else {
-      println(s"After $cycle cycle:")
+      println(s"Cycle: $cycle")
       runSixCycles(runOnce(pocketDimension), cycle + 1)
     }
   }
@@ -87,13 +88,9 @@ object Day17 extends AocTools(17, 2020) {
     println(s"AOC 2020 - Day $day")
     val start = System.currentTimeMillis()
 
-    val part1 = runSixCycles(initialState, 0).size
+    val answer = runSixCycles(initialState, cycle = 0).size
     val mid = System.currentTimeMillis()
 
-    println(s"Answer part 1: $part1 [${mid - start}ms]")
-
-    val part2 = ???
-    val end = System.currentTimeMillis()
-    println(s"Answer part 2: $part2 [${`end` - mid}ms]")
+    println(s"Answer : $answer [${mid - start}ms]")
   }
 }
