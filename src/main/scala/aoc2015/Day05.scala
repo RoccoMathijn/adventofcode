@@ -20,11 +20,15 @@ object Day05 extends AocTools(5, 2015) {
   def atLeastOneWhichRepeatsWithExactlyOneLetterInBetweenThem(string: String): Boolean = string.toList.sliding(3, 1).exists { case List(one, _, three) => one == three }
 
   def main(args: Array[String]): Unit = {
-    val numberNiceStrings = input.count(string => atLeastThreeVowels(string) && twiceInARow(string) && notContains(string))
+    val start = System.currentTimeMillis()
+    println(s"AOC 2015 - Day $day")
 
-    println(numberNiceStrings)
+    val part1 = input.count(string => atLeastThreeVowels(string) && twiceInARow(string) && notContains(string))
+    val mid = System.currentTimeMillis()
+    println(s"Answer part 1: $part1 [${mid - start}ms]")
 
-    val numberNiceStrings2 = input.count(string => atLeastTwiceWithoutOverlapping(string) && atLeastOneWhichRepeatsWithExactlyOneLetterInBetweenThem(string))
-    println(numberNiceStrings2)
+    val part2 = input.count(string => atLeastTwiceWithoutOverlapping(string) && atLeastOneWhichRepeatsWithExactlyOneLetterInBetweenThem(string))
+    val end = System.currentTimeMillis()
+    println(s"Answer part 2: $part2 [${end - mid}ms]")
   }
 }
