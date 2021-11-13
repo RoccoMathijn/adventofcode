@@ -16,8 +16,13 @@ object Day06 extends AocTools(6, 2015) {
   case object TurnOn extends Action
   case object Toggle extends Action
 
-  type GridOne = List[(List[(State, Int)], Int)]
-  val startGrid: GridOne = List.fill(1000)(List.fill(1000)(Off).zipWithIndex).zipWithIndex
+  type Grid[X] = List[(List[(X, Int)], Int)]
+  type GridOne = Grid[State]
+  val startGridOne: GridOne = List.fill(1000)(List.fill(1000)(Off).zipWithIndex).zipWithIndex
+
+  case class Brightness(value: Int)
+  type GridTwo = Grid[Brightness]
+  val startGridTwo: GridTwo = List.fill(1000)(List.fill(1000)(Brightness(0)).zipWithIndex).zipWithIndex
 
   object Action {
     def apply(string: String): Action =
@@ -38,7 +43,7 @@ object Day06 extends AocTools(6, 2015) {
     }
   }
 
-  def traverseGrid[X](grid: List[(List[(X, Int)], Int)], instruction: Instruction, actionStrategy: (Action, X) => X): List[(List[(X, Int)], Int)] = {
+  def traverseGrid[X](grid: Grid[X], instruction: Instruction, actionStrategy: (Action, X) => X): Grid[X] = {
     grid.map {
       case (row, x) =>
         row.map {
@@ -67,15 +72,11 @@ object Day06 extends AocTools(6, 2015) {
     }
   }
 
-  case class Brightness(value: Int)
-  type GridTwo = List[(List[(Brightness, Int)], Int)]
-  val startGridTwo: GridTwo = List.fill(1000)(List.fill(1000)(Brightness(0)).zipWithIndex).zipWithIndex
-
   def main(args: Array[String]): Unit = {
     val start = System.currentTimeMillis()
     println(s"AOC 2015 - Day $day")
 
-    val part1 = input.map(parse).foldLeft(startGrid)((grid, instruction) => traverseGrid(grid, instruction, actionStrategyPart1)).map(_._1.count(_._1 == On)).sum
+    val part1 = input.map(parse).foldLeft(startGridOne)((grid, instruction) => traverseGrid(grid, instruction, actionStrategyPart1)).map(_._1.count(_._1 == On)).sum
     val mid = System.currentTimeMillis()
     println(s"Answer part 1: $part1 [${mid - start}ms]")
 
