@@ -31,7 +31,7 @@ object Day2 extends AocTools(2, 2021) {
 
   def main(args: Array[String]): Unit = {
     val start = System.currentTimeMillis()
-    println(s"AOC 2020 - Day $day")
+    println(s"AOC 2021 - Day $day")
 
     val mid = System.currentTimeMillis()
     println(s"Answer part 1: $part1 [${mid - start}ms]")
