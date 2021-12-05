@@ -2,7 +2,7 @@ package util
 
 import util.InputGetter.Mode
 
-abstract class AocTools(val day: Int, year: Int) {
+abstract class AocTools(val day: Int, val year: Int) {
 
   def inputLines(implicit mode: Mode): List[String] = InputGetter.get(day, year, mode).toList
 

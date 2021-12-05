@@ -51,7 +51,7 @@ object Day4 extends AocTools(4, 2021) {
 
   def main(args: Array[String]): Unit = {
     val start = System.currentTimeMillis()
-    println(s"AOC 2021 - Day $day")
+    println(s"AOC $year - Day $day")
 
     val (board, n) = playRounds(allBoards, bingoNumbers)
     val part1 = solve(board, n)
