@@ -1,40 +1,28 @@
 package aoc2021
 
 import util.AocTools
-import util.InputGetter.{Live, Mode, Example}
+import util.InputGetter.{Example, Live, Mode}
 
 object Day6 extends AocTools(6, 2021) {
 //  implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
 
-  val input: Seq[Int] = inputLines.head.split(',').map(_.toInt).toList
-
-  def simulate(fish: Seq[Int]): Seq[Int] = fish.foldLeft(Seq.empty[Int])((acc, fish) => if (fish == 0) 6 +: 8 +: acc else (fish - 1) +: acc)
-
-  val cache = scala.collection.mutable.Map.empty[(Int, Int), Long]
+  val input: Map[Int, Long] = inputLines.head.split(',').map(_.toInt).toList.groupBy(identity).view.mapValues(_.size.toLong).toMap
   
-  def calculate(fish: Int, days: Int): Long = {
-    if (days == 0) 1
-    else {
-      val result: Long = cache.getOrElse(
-        fish -> days, {
-          simulate(List(fish)).foldLeft(0L) { (acc, fish) => acc + calculate(fish, days - 1) }
-        }
-      )
-      cache.update(fish -> days, result)
-      result
-    }
-  }
+  def step(school: Map[Int, Long]): Map[Int, Long] =
+    school.toList.flatMap { case (age, n) => if (age - 1 < 0) List(6 -> n, 8 -> n) else List((age - 1) -> n) }.groupBy(_._1).view.mapValues(_.map(_._2).sum).toMap
+
+  def solve(n: Int): Long = (1 to n).foldLeft(input)((gen, _) => step(gen)).values.sum
 
   def main(args: Array[String]): Unit = {
     val start = System.currentTimeMillis()
     println(s"AOC $year - Day $day")
 
-    val part1 = input.foldLeft(0L) { (acc, fish) => acc + calculate(fish, 80) }
+    val part1 = solve(80)
     val mid = System.currentTimeMillis()
     println(s"Answer part 1: $part1 [${mid - start}ms]")
 
-    val part2 = input.foldLeft(0L) { (acc, fish) => acc + calculate(fish, 256) }
+    val part2 = solve(256)
     val end = System.currentTimeMillis()
     println(s"Answer part 2: $part2 [${end - mid}ms]")
   }
