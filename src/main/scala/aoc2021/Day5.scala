@@ -18,7 +18,7 @@ object Day5 extends AocTools(5, 2021) {
     else range.reverse
   }
 
-  val vents: List[(Coordinate, Coordinate)] = inputLines.map { case Vent(x1, x2, y1, y2) => Coordinate(x1.toInt, x2.toInt) -> Coordinate(y1.toInt, y2.toInt) }
+  val vents: List[(Coordinate, Coordinate)] = inputLines.map { case Vent(x1, y1, x2, y2) => Coordinate(x1.toInt, y1.toInt) -> Coordinate(x2.toInt, y2.toInt) }
   
   val horizontalAndVertical: Seq[(Int, Int)] = vents.collect {
     case Coordinate(x1, y1) -> Coordinate(x2, y2) if x1 == x2 => toRange(y1, y2).map(y => x1 -> y)
