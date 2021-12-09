@@ -3,8 +3,6 @@ package aoc2021
 import util.AocTools
 import util.InputGetter.{Live, Mode}
 
-import scala.util.Try
-
 object Day9 extends AocTools(9, 2021) {
 //  implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
@@ -34,11 +32,10 @@ object Day9 extends AocTools(9, 2021) {
   lazy val basinPoints: Set[Point] = allPoints.filterNot(point => valueOf(point) == 9)
 
   def group(basins: Set[Set[Point]], remainder: Set[Point]): Set[Set[Point]] =
-    remainder match {
-      case s if s.isEmpty => basins
-      case s =>
-        val (basin, newRem) = expand(Set(s.head), s.tail)
-        group(basins + basin, newRem)
+    if (remainder.isEmpty) basins
+    else {
+      val (basin, newRem) = expand(Set(remainder.head), remainder.tail)
+      group(basins + basin, newRem)
     }
 
   def expand(basin: Set[Point], remainder: Set[Point]): (Set[Point], Set[Point]) = {
