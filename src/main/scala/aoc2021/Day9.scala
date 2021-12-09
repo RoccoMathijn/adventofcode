@@ -12,7 +12,7 @@ object Day9 extends AocTools(9, 2021) {
   lazy val input: List[List[Int]] = inputLines.map(_.toList.map(_.toString.toInt))
 
   lazy val lowPoints: List[Int] = allPoints.toList.collect { case point if isLowPoint(point.x, point.y) => input(point.y)(point.x) }
-  
+
   def isLowPoint(x: Int, y: Int) = {
     val self = input(y)(x)
 
@@ -40,15 +40,14 @@ object Day9 extends AocTools(9, 2021) {
     }
 
   def expand(basin: Set[Point], remainder: Set[Point]): (Set[Point], Set[Point]) = {
-    val neighbours: Set[Point] = basin.flatMap(basinPoint => remainder.filter(remainderPoint => isNeighbour(basinPoint, remainderPoint)))
+    val neighbours: Set[Point] = remainder.intersect(basin.flatMap(neighbouringPoints))
     if (neighbours.isEmpty) basin -> remainder
     else expand(basin ++ neighbours, remainder.diff(neighbours))
   }
 
-  def isNeighbour(point: Point, point2: Point): Boolean =
-    point -> point2 match {
-      case (Point(x1, y1), Point(x2, y2)) =>
-        x1 == x2 && math.abs(y1 - y2) == 1 || math.abs(x1 - x2) == 1 && y1 == y2
+  def neighbouringPoints(point: Point): Set[Point] =
+    point match {
+      case Point(x, y) => Set(Point(x, y - 1), Point(x - 1, y), Point(x + 1, y), Point(x, y + 1))
     }
 
   def main(args: Array[String]): Unit = {
