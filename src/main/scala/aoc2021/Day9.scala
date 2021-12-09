@@ -1,7 +1,7 @@
 package aoc2021
 
 import util.AocTools
-import util.InputGetter.{Example, Live, Mode}
+import util.InputGetter.{Live, Mode}
 
 import scala.util.Try
 
@@ -11,25 +11,27 @@ object Day9 extends AocTools(9, 2021) {
 
   lazy val input: List[List[Int]] = inputLines.map(_.toList.map(_.toString.toInt))
 
-  lazy val lowPoints: List[Int] = allPoints.toList.collect { case point if isLowPoint(point.x, point.y) => input(point.y)(point.x) }
-
-  def isLowPoint(x: Int, y: Int) = {
-    val self = input(y)(x)
-
-    val up = Try(input(y)(x - 1))
-    val down = Try(input(y + 1)(x))
-    val left = Try(input(y - 1)(x))
-    val right = Try(input(y)(x + 1))
-
-    val neighbours = List(up, down, left, right).filter(_.isSuccess).map(_.get)
-    neighbours.forall(neighbour => neighbour > self)
-  }
-
   case class Point(x: Int, y: Int)
 
   lazy val allPoints: Set[Point] = input.head.indices.flatMap(x => input.indices.map(y => Point(x, y))).toSet
 
-  lazy val basinPoints: Set[Point] = allPoints.filterNot(point => input(point.y)(point.x) == 9)
+  lazy val lowPoints: List[Int] = allPoints.toList.collect { case point if isLowPoint(point) => valueOf(point) }
+
+  def valueOf(point: Point): Int = input(point.y)(point.x)
+
+  def neighbouringPoints(point: Point): Set[Point] =
+    point match {
+      case Point(x, y) => Set(Point(x, y - 1), Point(x - 1, y), Point(x + 1, y), Point(x, y + 1))
+    }
+    
+  def isLowPoint(point: Point): Boolean = {
+    val self = valueOf(point)
+
+    val neighbourValues = neighbouringPoints(point).map(p => Try(valueOf(p))).filter(_.isSuccess).map(_.get)
+    neighbourValues.forall(neighbour => neighbour > self)
+  }
+
+  lazy val basinPoints: Set[Point] = allPoints.filterNot(point => valueOf(point) == 9)
 
   def group(basins: Set[Set[Point]], remainder: Set[Point]): Set[Set[Point]] =
     remainder match {
@@ -44,11 +46,6 @@ object Day9 extends AocTools(9, 2021) {
     if (neighbours.isEmpty) basin -> remainder
     else expand(basin ++ neighbours, remainder.diff(neighbours))
   }
-
-  def neighbouringPoints(point: Point): Set[Point] =
-    point match {
-      case Point(x, y) => Set(Point(x, y - 1), Point(x - 1, y), Point(x + 1, y), Point(x, y + 1))
-    }
 
   def main(args: Array[String]): Unit = {
     val start = System.currentTimeMillis()
