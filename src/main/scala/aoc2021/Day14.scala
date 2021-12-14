@@ -18,31 +18,27 @@ object Day14 extends AocTools(14, 2021) {
 
   val allPairs: Seq[String] = insertionRules.keys.toList
 
-  val initialPairCount: Map[String, Long] = template.toSeq.sliding(2).map(_.mkString).toList.groupBy(identity).view.mapValues(_.size.toLong).toMap
-  val initialCharCount: Map[Char, Long] = template.toSeq.groupBy(identity).view.mapValues(_.size.toLong).toMap
+  val initialPairCount: Map[String, Long] = template.toSeq.sliding(2).map(_.mkString).toList.groupMapReduce(identity)(_ => 1L)(_ + _)
+  val initialCharCount: Map[Char, Long] = template.toSeq.groupMapReduce(identity)(_ => 1L)(_ + _)
 
   val insertionResults: Map[String, List[String]] = allPairs.map { pair =>
     val char = insertionRules(pair)
     pair -> List(s"${pair.head}$char", s"$char${pair.last}")
   }.toMap
 
-  def pairInsertion(n: Int, pairCounts: Map[String, Long], charCounts: Map[Char, Long]): Map[Char, Long] = {
-    if (n == 0) charCounts
-    else {
-      val newPairs: Map[String, Long] = pairCounts.toList
-        .flatMap(kv => insertionResults(kv._1).map(_ -> kv._2))
-        .groupMapReduce(_._1)(_._2)(_ + _)
+  private def pairInsertion(pairCounts: Map[String, Long], charCounts: Map[Char, Long]): (Map[String, Long], Map[Char, Long]) = {
+    val newPairs: Map[String, Long] = pairCounts.toList
+      .flatMap(kv => insertionResults(kv._1).map(_ -> kv._2))
+      .groupMapReduce(_._1)(_._2)(_ + _)
 
-      val newCharCounts: List[(Char, Long)] = pairCounts.toList.map(kv => insertionRules(kv._1) -> kv._2)
-      val totalCharCounts = (charCounts.toSeq ++ newCharCounts).groupMapReduce(_._1)(_._2)(_ + _)
-
-      pairInsertion(n - 1, newPairs, totalCharCounts)
-    }
+    val newCharCounts: List[(Char, Long)] = pairCounts.toList.map(kv => insertionRules(kv._1) -> kv._2)
+    val totalCharCounts = (charCounts.toSeq ++ newCharCounts).groupMapReduce(_._1)(_._2)(_ + _)
+    (newPairs, totalCharCounts)
   }
 
   def solve(n: Int): Long = {
-    val res = pairInsertion(n, initialPairCount, initialCharCount)
-    res.values.max - res.values.min
+    val polymer = (0 until n).foldLeft(initialPairCount -> initialCharCount)((acc, _) => pairInsertion(acc._1, acc._2))._2
+    polymer.values.max - polymer.values.min
   }
 
   def solve1: Long = solve(10)
