@@ -62,18 +62,23 @@ object Day15 extends AocTools(15, 2021) {
   }
 
   def solve1: Int = {
+    A.clear()
+    A.addOne(pointZero)
     X.clear()
-    X.addAll(n(pointZero, bottomRight))
+    X.addAll(n(pointZero, bottomRight)).diff(A)
     A.clear()
     A.addOne(pointZero)
     dijkstra(bottomRight)
   }
 
   def solve2: Int = {
-    X.clear()
-    X.addAll(n(pointZero, bottomRightSuperGrid))
     A.clear()
     A.addOne(pointZero)
+    X.clear()
+    X.addAll(n(pointZero, bottomRightSuperGrid)).diff(A)
+    d.clear()
+    d.addOne(pointZero -> 0)
+    n(pointZero, bottomRight).foreach(n => d.update(n, valueOf(n)))
     dijkstra(bottomRightSuperGrid)
   }
 
