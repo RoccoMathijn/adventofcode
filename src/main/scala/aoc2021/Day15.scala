@@ -34,27 +34,27 @@ object Day15 extends AocTools(15, 2021) {
   }
 
   // distance from (0,0)
-  val dCache: mutable.Map[Point, Int] = {
+  val d: mutable.Map[Point, Int] = {
     val i = mutable.Map[Point, Int](pointZero -> 0)
     n(pointZero, bottomRight).foreach(n => i.update(n, valueOf(n)))
     i
   }
-  val A: mutable.Set[Point] = mutable.Set(pointZero)
-  val X: mutable.Set[Point] = mutable.Set.empty
+  val A: mutable.Set[Point] = mutable.Set.empty[Point]
+  val X: mutable.Set[Point] = mutable.Set.empty[Point]
 
   def dijkstra(point: Point): Int = {
-    if (X.isEmpty) dCache(point)
+    if (X.isEmpty) d(point)
     else {
-      val x = X.map(x => x -> dCache(x)).minBy(_._2)._1
+      val x: Point = X.minBy(d)
       X.remove(x)
       A.addOne(x)
-      n(x, point).diff(A).foreach { z =>
+      n(x, point).diff(A).foreach { z: Point =>
+        val distance: Int = d(x) + valueOf(z)
         if (X.contains(z)) {
-          val distance = dCache(x) + valueOf(z)
-          dCache.updateWith(x)(_.map(existing => math.min(existing, distance)).orElse(Some(distance)))
+          d.updateWith(z)(_.map(existing => math.min(existing, distance)).orElse(Some(distance)))
         } else {
           X.addOne(z)
-          dCache.update(z, dCache(x) + valueOf(z))
+          d.update(z, distance)
         }
       }
       dijkstra(point)
@@ -62,12 +62,15 @@ object Day15 extends AocTools(15, 2021) {
   }
 
   def solve1: Int = {
+    X.clear()
     X.addAll(n(pointZero, bottomRight))
     A.clear()
+    A.addOne(pointZero)
     dijkstra(bottomRight)
   }
 
   def solve2: Int = {
+    X.clear()
     X.addAll(n(pointZero, bottomRightSuperGrid))
     A.clear()
     A.addOne(pointZero)
