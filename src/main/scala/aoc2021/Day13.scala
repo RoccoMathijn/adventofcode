@@ -4,8 +4,8 @@ import util.AocTools
 import util.InputGetter.{Example, Live, Mode}
 
 object Day13 extends AocTools(13, 2021) {
-  implicit private val mode: Mode = Example
-//  implicit private val mode: Mode = Live
+//  implicit private val mode: Mode = Example
+  implicit private val mode: Mode = Live
 
   case class Coordinate(x: Int, y: Int)
   val dots: Set[Coordinate] = inputLines
@@ -40,7 +40,7 @@ object Day13 extends AocTools(13, 2021) {
   def toString(dots: Set[Coordinate]): String =
     "\n" +
       (0 to dots.maxBy(_.y).y)
-        .map(y => (0 to dots.maxBy(_.x).x).map(x => dots.find(dot => dot.x == x && dot.y == y).map(_ => "#").getOrElse(".")).mkString)
+        .map(y => (0 to dots.maxBy(_.x).x).map(x => dots.find(dot => dot.x == x && dot.y == y).map(_ => "#").getOrElse(" ")).mkString)
         .mkString("\n")
 
   def solve1: Int = fold(dots, foldInstructions.take(1)).size

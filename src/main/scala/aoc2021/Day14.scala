@@ -16,15 +16,13 @@ object Day14 extends AocTools(14, 2021) {
     }
     .toMap
 
-  val allPairs: Seq[String] = insertionRules.keys.toList
-
   val initialPairCount: Map[String, Long] = template.toSeq.sliding(2).map(_.mkString).toList.groupMapReduce(identity)(_ => 1L)(_ + _)
   val initialCharCount: Map[Char, Long] = template.toSeq.groupMapReduce(identity)(_ => 1L)(_ + _)
 
-  val insertionResults: Map[String, List[String]] = allPairs.map { pair =>
-    val char = insertionRules(pair)
-    pair -> List(s"${pair.head}$char", s"$char${pair.last}")
-  }.toMap
+  val insertionResults: Map[String, List[String]] = insertionRules.map {
+    case (pair, char) =>
+      pair -> List(s"${pair.head}$char", s"$char${pair.last}")
+  }
 
   private def pairInsertion(pairCounts: Map[String, Long], charCounts: Map[Char, Long]): (Map[String, Long], Map[Char, Long]) = {
     val newPairs: Map[String, Long] = pairCounts.toList
