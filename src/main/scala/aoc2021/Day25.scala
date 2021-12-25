@@ -58,7 +58,7 @@ object Day25 extends AocTools(25, 2021) {
     stepSouth(0, 0, grid.map(_.toList).toList)
   }
   
-  def print = {
+  def print() = {
     grid.toList.map(_.toList) foreach( line => println(line.mkString))
     println()
   }
