@@ -3,3 +3,9 @@
 .env
 **/input-day**.txt
 !**/input-day*-example.txt
+.bloop
+.vscode
+.metals
+project/metals.sbt
+project/.bloop
+project/project
