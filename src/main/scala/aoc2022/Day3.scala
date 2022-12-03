@@ -7,24 +7,27 @@ object Day3 extends AocTools(3, 2022) {
 //  implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
 
-  def rucksacks: List[Char] =
-    inputLines.flatMap { line =>
-      val (left, right) = line.splitAt(line.length / 2)
+  def priority(item: Char): Int = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(item) + 1
 
-      line.find(c => left.contains(c) && right.contains(c))
-    }
-
-  val priorities = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-  def part1: Int = rucksacks.map(x => priorities.indexOf(x) + 1).sum
+  def part1: Int =
+    inputLines
+      .flatMap { line =>
+        val (left, right) = line.splitAt(line.length / 2)
+        left.toSet.intersect(right.toSet)
+      }
+      .map(priority)
+      .sum
 
   def part2: Int =
     inputLines
       .grouped(3)
-      .flatMap(group =>
-        group.head
-          .find(c => group(0).contains(c) && group(1).contains(c) && group(2).contains(c))
-          .map(c => priorities.indexOf(c) + 1)
-      )
+      .flatMap {
+        case List(one, two, three) =>
+          one.toSet
+            .intersect(two.toSet)
+            .intersect(three.toSet)
+            .map(priority)
+      }
       .sum
 
   def main(args: Array[String]): Unit = {
