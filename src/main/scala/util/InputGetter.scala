@@ -24,8 +24,8 @@ object InputGetter {
       }
     } else {
       println("Downloading day " + day)
-      os.write(targetPath, requests.get.stream(s"https://adventofcode.com/$year/day/$day/input", check = true, cookieValues = Map("session" -> session)))
       if (!os.exists(examplePath)) os.write(examplePath, "")
+      os.write(targetPath, requests.get.stream(s"https://adventofcode.com/$year/day/$day/input", check = true, cookieValues = Map("session" -> session)))
       get(day, year, mode)
     }
   }
