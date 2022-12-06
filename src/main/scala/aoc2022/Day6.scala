@@ -7,15 +7,15 @@ object Day6 extends AocTools(6, 2022) {
 //  implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
 
-  def packetMarker(uniqueSize: Int) = {
+  def packetMarker(uniqueSize: Int): Int = {
     val line = inputLines.head
-    val unique = line.sliding(uniqueSize, 1).toList.find(group => group.distinct.size == uniqueSize).get
+    val unique = line.sliding(uniqueSize, 1).find(_.distinct.size == uniqueSize).get
     line.indexOf(unique) + uniqueSize
   }
 
-  def part1 = packetMarker(4)
+  def part1: Int = packetMarker(4)
 
-  def part2 = packetMarker(14)
+  def part2: Int = packetMarker(14)
 
   def main(args: Array[String]): Unit = {
     val start = System.currentTimeMillis()
