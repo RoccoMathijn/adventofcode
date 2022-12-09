@@ -12,7 +12,7 @@ object Day8 extends AocTools(8, 2022) {
   val colSize: Int = input.transpose.head.size
 
   def isVisible(x: Int, y: Int) = {
-    val outerEdge = x == 0 | y == 0 || x == rowSize - 1 || y == colSize - 1
+    val outerEdge = x == 0 || y == 0 || x == rowSize - 1 || y == colSize - 1
 
     lazy val height = input(x)(y)
     lazy val isVisibleFromTheLeft = input(x).take(y).max < height
