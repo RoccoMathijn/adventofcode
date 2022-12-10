@@ -7,10 +7,6 @@ object Day10 extends AocTools(10, 2022) {
 //  implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
 
-  sealed trait Instruction
-  case object Noop extends Instruction
-  case class AddX(value: Int) extends Instruction
-
   case class State(register: Int, cycle: Int, history: List[Int])
 
   def execute: State =
