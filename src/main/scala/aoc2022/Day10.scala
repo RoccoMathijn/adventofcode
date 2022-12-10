@@ -35,7 +35,7 @@ object Day10 extends AocTools(10, 2022) {
     history.drop(1).zipWithIndex.foreach {
       case (x, i) =>
         val pixel = i % 40
-        if (x == pixel || x - 1 == pixel || x + 1 == pixel) print("█") else print(".")
+        if (x == pixel || x - 1 == pixel || x + 1 == pixel) print("█") else print(" ")
         if (pixel == 39) println("")
     }
   }
