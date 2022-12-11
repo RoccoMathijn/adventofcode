@@ -26,9 +26,7 @@ object Day10 extends AocTools(10, 2022) {
       else interestingCycles(newCycle :: acc)
     }
 
-    interestingCycles(List(20)).map { cycle =>
-      cycle * history(cycle)
-    }.sum
+    interestingCycles(List(20)).map(cycle => cycle * history(cycle)).sum
   }
 
   def printHistory(history: List[Int]): Unit = {
