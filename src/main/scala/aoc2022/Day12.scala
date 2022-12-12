@@ -10,16 +10,18 @@ object Day12 extends AocTools(12, 2022) {
 //      implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
 
+  case class Point(x: Int, y: Int)
+
+  val grid: List[List[Int]] = inputLines.map(line => line.toList.map(height))
+  val start: Point = findValue('S').head
+  val end: Point = findValue('E').head
+  val bottomRight: Point = Point(grid.head.size - 1, grid.size - 1)
+
   def findValue(value: Char): List[Point] =
     inputLines.map(_.toList).zipWithIndex.flatMap {
       case (line, y) => Some(Point(line.indexOf(value), y)).filterNot(_.x == -1)
     }
 
-  case class Point(x: Int, y: Int)
-  val grid: List[List[Int]] = inputLines.map(line => line.toList.map(height))
-  val start: Point = findValue('S').head
-  val end: Point = findValue('E').head
-  val bottomRight: Point = Point(grid.head.size - 1, grid.size - 1)
   def height(item: Char): Int = if (item == 'S') 0 else if (item == 'E') 25 else "abcdefghijklmnopqrstuvwxyz".indexOf(item)
 
   def heightOf(point: Point): Int = grid(point.y)(point.x)
@@ -33,31 +35,30 @@ object Day12 extends AocTools(12, 2022) {
     val right = Point(point.x + 1, point.y)
 
     Set(top, left, down, right)
-      .filter(point => point.x >= 0 && point.y >= 0 && point.x <= bottomRight.x && point.y <= bottomRight.y)
+      .filter(point =>
+        point.x >= 0 && point.y >= 0 &&
+          point.x <= bottomRight.x &&
+          point.y <= bottomRight.y
+      )
       .filter(n => heightOf(n) - heightOf(point) <= 1)
   }
-  
+
   def solveFrom(point: Point): Int = {
-    initD(point)
+    d.clear()
     A.clear()
     X.clear()
+    d.addOne(point -> 0)
+    n(point).foreach(n => d.update(n, 1))
     A.addOne(point)
     X.addAll(n(point)).diff(A)
     dijkstra(end)
   }
-  
+
   def solve1: Int = solveFrom(start)
   def solve2: Int = allA.map(solveFrom).min
 
   // distance from S
   val d: mutable.Map[Point, Int] = mutable.Map.empty
-  
-  def initD(point: Point): Unit = {
-    d.clear()
-    d.addOne(point -> 0)
-    n(point).foreach(n => d.update(n, 1))
-  }
-
   val A: mutable.Set[Point] = mutable.Set.empty[Point]
   val X: mutable.Set[Point] = mutable.Set.empty[Point]
 
