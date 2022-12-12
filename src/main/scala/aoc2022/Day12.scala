@@ -48,10 +48,8 @@ object Day12 extends AocTools(12, 2022) {
     A.clear()
     X.clear()
     d.addOne(point -> 0)
-    val neighBours = n(point)
-    neighBours.foreach(n => d.update(n, 1))
     A.addOne(point)
-    X.addAll(neighBours)
+    X.addOne(point)
     dijkstra(end)
   }
 
