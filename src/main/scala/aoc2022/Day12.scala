@@ -48,18 +48,21 @@ object Day12 extends AocTools(12, 2022) {
     A.clear()
     X.clear()
     d.addOne(point -> 0)
-    n(point).foreach(n => d.update(n, 1))
+    val neighBours = n(point)
+    neighBours.foreach(n => d.update(n, 1))
     A.addOne(point)
-    X.addAll(n(point)).diff(A)
+    X.addAll(neighBours)
     dijkstra(end)
   }
 
   def solve1: Int = solveFrom(start)
   def solve2: Int = allA.map(solveFrom).min
 
-  // distance from S
+  // Map with distance from S per node
   val d: mutable.Map[Point, Int] = mutable.Map.empty
+  // Set with visited nodes
   val A: mutable.Set[Point] = mutable.Set.empty[Point]
+  // Reachable nodes from frontier
   val X: mutable.Set[Point] = mutable.Set.empty[Point]
 
   @tailrec
@@ -72,7 +75,7 @@ object Day12 extends AocTools(12, 2022) {
       n(x).diff(A).foreach { z: Point =>
         val distance: Int = d(x) + 1
         if (X.contains(z)) {
-          d.updateWith(z)(_.map(existing => math.min(existing, distance)).orElse(Some(distance)))
+          d.updateWith(z)(_.map(existing => math.min(existing, distance)))
         } else {
           X.addOne(z)
           d.update(z, distance)
