@@ -7,7 +7,7 @@ import scala.annotation.tailrec
 import scala.collection.mutable
 
 object Day12 extends AocTools(12, 2022) {
-//      implicit private val mode: Mode = Example
+//  implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
 
   case class Point(x: Int, y: Int)
@@ -48,35 +48,36 @@ object Day12 extends AocTools(12, 2022) {
     A.clear()
     X.clear()
     d.addOne(point -> 0)
-    A.addOne(point)
-    X.addOne(point)
+    X.addOne(Distance(point, 0))
     dijkstra(end)
   }
 
   def solve1: Int = solveFrom(start)
   def solve2: Int = allA.map(solveFrom).min
 
+  case class Distance(point: Point, distance: Int)
   // Map with distance from S per node
   val d: mutable.Map[Point, Int] = mutable.Map.empty
   // Set with visited nodes
   val A: mutable.Set[Point] = mutable.Set.empty[Point]
+
+  val ordering: Ordering[Distance] = Ordering.by(_.distance)
+  implicit val minOrdering: Ordering[Distance] = ordering.reverse
   // Reachable nodes from frontier
-  val X: mutable.Set[Point] = mutable.Set.empty[Point]
+  val X: mutable.PriorityQueue[Distance] = mutable.PriorityQueue.empty[Distance]
 
   @tailrec
   def dijkstra(point: Point): Int = {
     if (X.isEmpty) d(point)
     else {
-      val x: Point = X.minBy(d)
-      X.remove(x)
+      val x: Point = X.dequeue().point
       A.addOne(x)
       n(x).diff(A).foreach { z: Point =>
         val distance: Int = d(x) + 1
-        if (X.contains(z)) {
-          d.updateWith(z)(_.map(existing => math.min(existing, distance)))
-        } else {
-          X.addOne(z)
-          d.update(z, distance)
+        val dz = d.get(z)
+        if (dz.isEmpty || dz.exists(_ > distance)) {
+          d.addOne(z -> distance)
+          X.addOne(Distance(z, distance))
         }
       }
       dijkstra(point)
