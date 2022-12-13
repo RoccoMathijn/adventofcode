@@ -23,11 +23,10 @@ object Day13 extends AocTools(13, 2022) {
 
   def parse(input: String): PacketData = {
     input match {
-      case input if input.head.isDigit =>
-        Integer(input.takeWhile(_ != ',').toInt)
       case input if input.startsWith("[") =>
         val items = splitList(input.tail.init)
         PacketList(items.map(parse))
+      case input => Integer(input.toInt)
     }
   }
 
