@@ -76,7 +76,13 @@ object Day13 extends AocTools(13, 2022) {
     }
   }
 
-  def solve1: Int = input.map(t => comparePackets(t._1, t._2)).zipWithIndex.filter(t => t._1.contains(true)).map(_._2).map(_ + 1).sum
+  def solve1: Int =
+    input
+      .map(t => comparePackets(t._1, t._2))
+      .zipWithIndex
+      .filter(t => t._1.contains(true))
+      .map { case (_, i) => i + 1 }
+      .sum
 
   def solve2: Int = {
     val dividerPackets = List(parse("[[2]]"), parse("[[6]]"))
