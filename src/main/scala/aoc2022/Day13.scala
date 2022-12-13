@@ -3,11 +3,13 @@ package aoc2022
 import util.AocTools
 import util.InputGetter.{Example, Live, Mode}
 
+import scala.annotation.tailrec
+
 object Day13 extends AocTools(13, 2022) {
 //  implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
 
-  val input: List[(PacketData, PacketData)] = inputLines.grouped(3).map(_.take(2)).toList.map(_.map(parse)).map(group => group(0) -> group(1))
+  val input: List[(PacketData, PacketData)] = inputLines.grouped(3).map(_.take(2)).toList.map(_.map(parse)).map(group => group.head -> group.last)
   assert(inputLines.filter(_.nonEmpty).forall(line => toString(parse(line)) == line))
 
   sealed trait PacketData extends Ordered[PacketData] {
@@ -39,6 +41,7 @@ object Day13 extends AocTools(13, 2022) {
     }
   }
 
+  @tailrec
   def takeUntilClosingChar(string: String, acc: String = "[", counter: Int = 1): (String, String) = {
     if (counter == 0) acc -> string.drop(1)
     else {
@@ -80,7 +83,7 @@ object Day13 extends AocTools(13, 2022) {
     (input.flatMap { case (left, right) => List(left, right) } ++ dividerPackets)
       .sorted
       .zipWithIndex
-      .filter(t => dividerPackets.contains(t._1))
+      .filter { case (packet, _) => dividerPackets.contains(packet) }
       .map { case (_, i) => i + 1 }
       .product
   }
