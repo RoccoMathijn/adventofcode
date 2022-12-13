@@ -7,7 +7,7 @@ object Day13 extends AocTools(13, 2022) {
 //  implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
 
-  val input = inputLines.grouped(3).map(_.take(2)).toList.map(_.map(parse)).map(group => group(0) -> group(1))
+  val input: List[(PacketData, PacketData)] = inputLines.grouped(3).map(_.take(2)).toList.map(_.map(parse)).map(group => group(0) -> group(1))
   assert(inputLines.filter(_.nonEmpty).forall(line => toString(parse(line)) == line))
 
   sealed trait PacketData extends Ordered[PacketData] {
