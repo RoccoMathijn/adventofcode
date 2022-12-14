@@ -20,24 +20,27 @@ object Day14 extends AocTools(14, 2022) {
 
   val maxY: Int = cave.map(_.y).max
 
-  def dropSand(fallingSand: Point, sandSpots: Set[Point], withBottom: Boolean): Set[Point] = {
-    val List(leftD, down, rightD) = (-1 to 1).map(x => Point(fallingSand.x + x, fallingSand.y + 1)).toList
-    if (sandSpots.contains(Point(500, 0))) sandSpots
-    else if (bottom(fallingSand)) if (withBottom) sandSpots + fallingSand else sandSpots
+  private val dropPoint: Point = Point(500, 0)
+
+  def dropSand(fallingSand: Point, sandSpots: Set[Point], withBottom: Boolean): Option[Point] = {
+    lazy val List(leftD, down, rightD) = (-1 to 1).map(x => Point(fallingSand.x + x, fallingSand.y + 1)).toList
+    if (sandSpots.contains(dropPoint)) None
+    else if (bottom(fallingSand)) if (withBottom) Some(fallingSand) else None
     else if (unoccupied(down, sandSpots)) dropSand(down, sandSpots, withBottom)
     else if (unoccupied(leftD, sandSpots)) dropSand(leftD, sandSpots, withBottom)
     else if (unoccupied(rightD, sandSpots)) dropSand(rightD, sandSpots, withBottom)
-    else sandSpots + fallingSand
+    else Some(fallingSand)
   }
 
-  private def unoccupied(point: Point, sandSpots: Set[Point]): Boolean = !cave.contains(point) && !sandSpots.contains(point)
+  private def unoccupied(point: Point, sandSpots: Set[Point]): Boolean = !(sandSpots.contains(point) || cave.contains(point))
 
   def bottom(point: Point): Boolean = point.y == maxY + 1
 
   def dropUntilFull(sandSpots: Set[Point], withBottom: Boolean): Set[Point] = {
-    val newSandSpots = dropSand(Point(500, 0), sandSpots, withBottom)
-    if (newSandSpots == sandSpots) sandSpots
-    else dropUntilFull(newSandSpots, withBottom)
+    dropSand(dropPoint, sandSpots, withBottom) match {
+      case Some(sandSpot) => dropUntilFull(sandSpots + sandSpot, withBottom)
+      case None           => sandSpots
+    }
   }
 
   def printCave(sandSpots: Set[Point]): Unit = {
