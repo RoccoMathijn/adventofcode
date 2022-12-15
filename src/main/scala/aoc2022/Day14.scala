@@ -46,7 +46,7 @@ object Day14 extends AocTools(14, 2022) {
   def printCave(sandSpots: Set[Point]): Unit = {
     (math.min(sandSpots.map(_.y).min, cave.map(_.y).min) to math.max(sandSpots.map(_.y).max, cave.map(_.y).max)).foreach { y =>
       (math.min(sandSpots.map(_.x).min, cave.map(_.x).min) to math.max(sandSpots.map(_.x).max, cave.map(_.x).max)).foreach { x =>
-        if (cave.contains(Point(x, y))) print('#')
+        if (cave.contains(Point(x, y))) print('█')
         else if (sandSpots.contains(Point(x, y))) print('O')
         else print('.')
       }
@@ -67,5 +67,7 @@ object Day14 extends AocTools(14, 2022) {
     val part2 = solve2
     val end = System.currentTimeMillis()
     println(s"Answer part 2: $part2 [${end - mid}ms]")
+
+    printCave(dropUntilFull(Set.empty, withBottom = true))
   }
 }
