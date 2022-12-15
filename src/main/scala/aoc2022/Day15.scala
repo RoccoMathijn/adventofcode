@@ -10,51 +10,31 @@ object Day15 extends AocTools(15, 2022) {
   val input = inputLines.map {
     case s"Sensor at x=$sx, y=$sy: closest beacon is at x=$bx, y=$by" =>
       Point(sx.toInt, sy.toInt) -> Point(bx.toInt, by.toInt)
-  }
-  
-  def noBeacon(pair: (Point, Point), row: Int): Set[Point] = {
-    val distance = manhattanDistance(pair._1, pair._2)
-
-    val distanceToRow = math.abs(pair._1.y - row)
-    if (distanceToRow > distance) Set.empty
-    else {
-
-      (for {
-        x <- -math.abs(distanceToRow - distance) to math.abs(distanceToRow - distance)
-      } yield Point(pair._1.x + x, row)).toSet
-    }
-  }
+  }.toSet
 
   case class Interval(from: Int, to: Int)
-  def check(sensors: List[(Point, Point)], row: Int, ranges: List[Interval], maxX: Int): List[Interval] = {
-//    println(ranges)
+  def coverageOnRow(sensors: Set[(Point, Point)], row: Int, ranges: Set[Interval], minX: Int, maxX: Int): Set[Interval] = {
     if (sensors.isEmpty) ranges
     else {
       val sensorPair = sensors.head
       val mh = manhattanDistance(sensorPair._1, sensorPair._2)
-//      println(sensorPair)
-//      println(mh)
       val distanceToRow = math.abs(sensorPair._1.y - row)
-//      println(distanceToRow)
-      if (distanceToRow > mh) check(sensors.tail, row, ranges, maxX)
+      if (distanceToRow > mh) coverageOnRow(sensors.tail, row, ranges, minX, maxX)
       else {
         val minXRelative = -(mh - distanceToRow)
         val maxXRel = mh - distanceToRow
-//        println(s"MinXRel=$minXRelative, MaxXRel=$maxXRel")
-        val rangeOnRow = Interval(bound(minXRelative + sensorPair._1.x, maxX), bound(maxXRel + sensorPair._1.x, maxX))
-//        println(rangeOnRow)
-        check(sensors.tail, row, rangeOnRow :: ranges, maxX)
+        val rangeOnRow = Interval(bound(minXRelative + sensorPair._1.x, minX, maxX), bound(maxXRel + sensorPair._1.x, minX, maxX))
+        coverageOnRow(sensors.tail, row, ranges+rangeOnRow , minX, maxX)
       }
     }
   }
 
-  def bound(i: Int, max: Int): Int = {
-    math.min(math.max(0, i), max)
+  def bound(i: Int, min: Int, max: Int): Int = {
+    math.min(math.max(min, i), max)
   }
 
   def mergeIntervalList(intervals: List[Interval]): List[Interval] = {
-//    println(s"merging $intervals")
-    val res = intervals.tail.foldLeft(List(intervals.head))((acc, i) => mergeIntervals(acc.head,i) ++ acc).distinct.sortBy(_.from)
+    val res = intervals.tail.foldLeft(List(intervals.head))((acc, i) => mergeIntervals(acc.head, i) ++ acc).distinct.sortBy(_.from)
     if (res == intervals) res
     else mergeIntervalList(res)
   }
@@ -70,14 +50,14 @@ object Day15 extends AocTools(15, 2022) {
     !(left.from > right.to || left.to < right.from)
   }
 
-  def checkRow(y: Int, bound: Int): Point = {
-    if (y > bound) Point(0, 0)
+  def checkAllRows(from: Int, to: Int): Point = {
+    if (from > to) Point(0, 0)
     else {
-      mergeIntervalList(check(input, y, List.empty, bound)) match {
+      mergeIntervalList(coverageOnRow(input, from, Set.empty, 0, to).toList) match {
         case List(_) =>
-          checkRow(y + 1, bound)
-        case List(i1, ) =>
-          Point(i1.to+1, y)
+          checkAllRows(from + 1, to)
+        case List(i1, _) =>
+          Point(i1.to + 1, from)
       }
     }
   }
@@ -88,9 +68,19 @@ object Day15 extends AocTools(15, 2022) {
 
   def tuningFrequency(point: Point): Long = point.x.toLong * 4000000 + point.y.toLong
 
-  def solve1: Long = input.toSet.flatMap(noBeacon(_, 2000000)).diff(input.map(_._1).toSet ++ input.map(_._2).toSet).size
+  def solve1: Long = {
+//    val row = 10
+    val row = 2000000
+    coverageOnRow(input, row, Set.empty, Int.MinValue, Int.MaxValue)
+      .flatMap { case Interval(from, to) => from to to}
+      .diff(input.filter(_._1.y == row).map(_._1.x) ++ input.filter(_._2.y == row).map(_._2.x))
+      .size
+  }
 
-  def solve2: Long = tuningFrequency(checkRow(0, 4000000))
+  def solve2: Long = {
+    val point = checkAllRows(0, 4000000) 
+    tuningFrequency(point)
+  }
 
   def main(args: Array[String]): Unit = {
     val start = System.currentTimeMillis()
