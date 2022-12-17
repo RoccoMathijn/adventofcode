@@ -14,10 +14,6 @@ object Day16 extends AocTools(16, 2022) {
 
   case class Valve(id: String, flowRate: Int, neighbours: Set[String], open: Boolean = false)
 
-  object Valve {
-    def fromString(string: String): Valve = input.find(_.id == string).get
-  }
-
   val input: List[Valve] = inputLines.map {
     case s"Valve $v has flow rate=$r; tunnel leads to valve $vx"  => Valve(v, r.toInt, Set(vx))
     case s"Valve $v has flow rate=$r; tunnels lead to valves $vx" => Valve(v, r.toInt, vx.split(", ").toSet)
@@ -25,7 +21,6 @@ object Day16 extends AocTools(16, 2022) {
 
   val edges = input.flatMap(v => v.neighbours.map(n => v.id ~ n))
   val graph = Graph(edges: _*)
-
   val spMap = mutable.Map.empty[(String, String), List[String]]
   def shortestPath(from: String, to: String): List[String] = {
     val List(f, t) = List(from, to).sorted
