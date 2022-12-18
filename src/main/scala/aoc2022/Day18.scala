@@ -14,23 +14,23 @@ object Day18 extends AocTools(18, 2022) {
   }.toSet
 
   private def surfaceArea(shape: Set[Voxel]): Int = {
-    (6 * shape.size) - shape.toList.map { cube =>
-      shape.count { otherCube => (math.abs(otherCube.x - cube.x) + math.abs(otherCube.y - cube.y) + math.abs(otherCube.z - cube.z)) == 1 }
+    (6 * shape.size) - shape.toList.map { voxel =>
+      shape.count { othervoxel => (math.abs(othervoxel.x - voxel.x) + math.abs(othervoxel.y - voxel.y) + math.abs(othervoxel.z - voxel.z)) == 1 }
     }.sum
   }
 
-  def neighbours(cube: Voxel): Set[Voxel] = {
+  def neighbours(voxel: Voxel): Set[Voxel] = {
     Set(
-      cube.copy(x = cube.x - 1),
-      cube.copy(x = cube.x + 1),
-      cube.copy(y = cube.y - 1),
-      cube.copy(y = cube.y + 1),
-      cube.copy(z = cube.z - 1),
-      cube.copy(z = cube.z + 1)
+      voxel.copy(x = voxel.x - 1),
+      voxel.copy(x = voxel.x + 1),
+      voxel.copy(y = voxel.y - 1),
+      voxel.copy(y = voxel.y + 1),
+      voxel.copy(z = voxel.z - 1),
+      voxel.copy(z = voxel.z + 1)
     )
   }
 
-  def outOfBounds(cube: Voxel): Boolean = cube.x < xMin || cube.x > xMax || cube.y < yMin || cube.y > yMax || cube.z < zMin || cube.z > zMax
+  def outOfBounds(voxel: Voxel): Boolean = voxel.x < xMin || voxel.x > xMax || voxel.y < yMin || voxel.y > yMax || voxel.z < zMin || voxel.z > zMax
 
   def expand(air: Set[Voxel]): Set[Voxel] = {
     val newAir = air ++ air.flatMap(neighbours).diff(lavaDroplet).filterNot(outOfBounds)
