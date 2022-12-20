@@ -48,17 +48,15 @@ object Day20 extends AocTools(20, 2022) {
 object Day20Helper {
   def moveIndexByPositions(i: Int, positions: Long, list: List[(Long, Int)]): List[(Long, Int)] = {
     val size = list.size
-    val newPosition = wrapAround(i + positions, size)
+    val newPosition = wrapAround(i + positions, size - 1)
     val filtered = list.take(i) ++ list.drop(i + 1)
     val (left, right) = filtered.splitAt(newPosition)
     (left :+ list(i)) ++ right
   }
 
   def wrapAround(i: Long, size: Int): Int = {
-    if ((i % (size - 1)) == 0) 0
-    else if (i >= size) (i % (size - 1)).toInt
-    else if (i < 0) wrapAround(size - 1 - math.abs((i % (size - 1)).toInt), size)
-    else i.toInt
+    val offset = (i % size).toInt
+    if (offset < 0) offset + size else offset
   }
 
   def nthNumberAfterZero(n: Int, list: List[Long]): Long = {
