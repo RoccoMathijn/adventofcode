@@ -3,7 +3,7 @@ package aoc2022
 import util.AocTools
 import util.InputGetter.{Live, Mode}
 
-object Day8 extends AocTools(8, 2022) {
+object Day08 extends AocTools(8, 2022) {
 //      implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
 

@@ -1,7 +1,5 @@
 package aoc2022
 
-import aoc2022.Prelude.Point
-
 object Prelude {
   def packetIndex(packetMarkerSize: Int, dataStreamBuffer: String): Int = {
     val packetMarker = dataStreamBuffer.sliding(packetMarkerSize, 1).find(_.distinct.length == packetMarkerSize).get
@@ -46,4 +44,7 @@ object Prelude {
   def eightAdjacencies(point: Point): Set[Point] = {
     nineAdjacencies(point).filterNot(_ == point)
   }
+
+  def binaryStringToInt(binaryString: String): Int =
+    Integer.parseInt(binaryString, 2)
 }

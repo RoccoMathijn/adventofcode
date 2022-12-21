@@ -1,25 +1,24 @@
 package aoc2022
 
 import util.AocTools
-import util.InputGetter._
+import util.InputGetter.{Example, Live, Mode}
 
-object Day0 extends AocTools(0, 2022) {
-  //    implicit private val mode: Mode = Example
+object Day01 extends AocTools(1, 2022) {
+//    implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
 
-  val input = inputLines
-  
-  def solve1 = ???
-  def solve2 = ???
-  
+  private val sumByElves: Array[Int] = inputBlob.split("\n\n").map(_.split("\n").map(_.toInt).sum)
+
+  val part1 = sumByElves.max
+
+  val part2 = sumByElves.sorted.reverse.take(3).sum
+
   def main(args: Array[String]): Unit = {
     val start = System.currentTimeMillis()
     println(s"AOC 2022 - Day $day")
 
-    val part1 = solve1  
     val mid = System.currentTimeMillis()
     println(s"Answer part 1: $part1 [${mid - start}ms]")
-    val part2 = solve2
     val end = System.currentTimeMillis()
     println(s"Answer part 2: $part2 [${end - mid}ms]")
   }
