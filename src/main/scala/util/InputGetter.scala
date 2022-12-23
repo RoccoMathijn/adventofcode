@@ -2,8 +2,6 @@ package util
 
 import os.Path
 
-import scala.annotation.tailrec
-
 object InputGetter {
 
   sealed trait Mode

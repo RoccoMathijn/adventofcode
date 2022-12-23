@@ -59,14 +59,15 @@ object Day23 extends AocTools(23, 2022) {
     if (round == 0) state
     else play(increment(state), round - 1)
 
-  def printState(set: Set[Point]): Unit = {
-    (set.minBy(_.y).y to set.maxBy(_.y).y).foreach { y =>
-      (set.minBy(_.x).x to set.maxBy(_.x).x).foreach { x =>
-        if (set.contains(Point(x, y))) print("#")
-        else print(".")
+  def printState(set: Set[Point]): String = {
+    (-20 to 130)
+      .map { y =>
+        (-20 to 130).map { x =>
+          if (set.contains(Point(x, y))) '#'
+          else '.'
+        }.mkString
       }
-      println("")
-    }
+      .mkString("\n")
   }
 
   def countEmptyTiles(set: Set[Point]): Int =
@@ -90,6 +91,7 @@ object Day23 extends AocTools(23, 2022) {
 
   def incrementWhileChanged(state: State, round: Int): Int = {
     val newState = increment(state)
+//    os.write.over(os.home / "Desktop" / "gameofelves" / s"round-${round - 1}.txt", printState(state.elfs), createFolders = true)
     if (newState.elfs == state.elfs) round else incrementWhileChanged(newState, round + 1)
   }
 
