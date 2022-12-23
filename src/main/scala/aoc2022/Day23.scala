@@ -22,39 +22,42 @@ object Day23 extends AocTools(23, 2022) {
   val order = List("North", "South", "West", "East")
 
   case class State(elfs: Set[Point], order: List[String])
-  def play(state: State, round: Int): State = {
-    if (round == 0) state
-    else {
-      val (toMoveElfs, doNothingElfs) = state.elfs.par.partition(elf => Prelude.eightAdjacencies(elf).intersect(state.elfs).nonEmpty)
-      
-      val proposals = toMoveElfs.map { elf: Point =>
-        val firstValidDirection = state.order.find {
-          case "North" => northAdjacencies(elf).intersect(state.elfs).isEmpty
-          case "South" => southAdjacencies(elf).intersect(state.elfs).isEmpty
-          case "West"  => westAdjacencies(elf).intersect(state.elfs).isEmpty
-          case "East"  => eastAdjacencies(elf).intersect(state.elfs).isEmpty
-        }
 
-        val proposal = firstValidDirection match {
-          case Some("North") => elf.copy(y = elf.y - 1)
-          case Some("South") => elf.copy(y = elf.y + 1)
-          case Some("West")  => elf.copy(x = elf.x - 1)
-          case Some("East")  => elf.copy(x = elf.x + 1)
-          case None          => elf
-        }
-        elf -> proposal
+  def increment(state: State): State = {
+    val (toMoveElfs, doNothingElfs) = state.elfs.par.partition(elf => Prelude.eightAdjacencies(elf).intersect(state.elfs).nonEmpty)
+
+    val proposals = toMoveElfs.map { elf: Point =>
+      val firstValidDirection = state.order.find {
+        case "North" => northAdjacencies(elf).intersect(state.elfs).isEmpty
+        case "South" => southAdjacencies(elf).intersect(state.elfs).isEmpty
+        case "West"  => westAdjacencies(elf).intersect(state.elfs).isEmpty
+        case "East"  => eastAdjacencies(elf).intersect(state.elfs).isEmpty
       }
-      
-      val proposalMap = proposals.groupBy(_._2)
 
-      val moved = proposals.map {
-        case (elf, proposal) =>
-          if (proposalMap(proposal).size > 1) elf else proposal
-      }.seq.toSet
+      val proposal = firstValidDirection match {
+        case Some("North") => elf.copy(y = elf.y - 1)
+        case Some("South") => elf.copy(y = elf.y + 1)
+        case Some("West")  => elf.copy(x = elf.x - 1)
+        case Some("East")  => elf.copy(x = elf.x + 1)
+        case None          => elf
+      }
 
-      play(State(moved ++ doNothingElfs, state.order.tail :+ state.order.head), round - 1)
+      elf -> proposal
     }
+
+    val proposalMap = proposals.groupBy(_._2)
+
+    val moved = proposals
+      .map { case (elf, proposal) => if (proposalMap(proposal).size > 1) elf else proposal }
+      .seq
+      .toSet
+
+    State(moved ++ doNothingElfs, state.order.tail :+ state.order.head)
   }
+
+  def play(state: State, round: Int): State =
+    if (round == 0) state
+    else play(increment(state), round - 1)
 
   def printState(set: Set[Point]): Unit = {
     (set.minBy(_.y).y to set.maxBy(_.y).y).foreach { y =>
@@ -75,39 +78,18 @@ object Day23 extends AocTools(23, 2022) {
 
   val beginState = State(input, order)
 
-  def northAdjacencies(point: Point): Set[Point] = {
-    val topLeft = Point(point.x - 1, point.y - 1)
-    val top = Point(point.x, point.y - 1)
-    val topRight = Point(point.x + 1, point.y - 1)
-    Set(topLeft, top, topRight)
-  }
+  def northAdjacencies(point: Point): Set[Point] = Set(Point(point.x - 1, point.y - 1), Point(point.x, point.y - 1), Point(point.x + 1, point.y - 1))
 
-  def southAdjacencies(point: Point): Set[Point] = {
-    val topLeft = Point(point.x - 1, point.y + 1)
-    val top = Point(point.x, point.y + 1)
-    val topRight = Point(point.x + 1, point.y + 1)
-    Set(topLeft, top, topRight)
-  }
+  def southAdjacencies(point: Point): Set[Point] = Set(Point(point.x - 1, point.y + 1), Point(point.x, point.y + 1), Point(point.x + 1, point.y + 1))
 
-  def westAdjacencies(point: Point): Set[Point] = {
-    val topLeft = Point(point.x - 1, point.y - 1)
-    val top = Point(point.x - 1, point.y)
-    val topRight = Point(point.x - 1, point.y + 1)
-    Set(topLeft, top, topRight)
-  }
+  def westAdjacencies(point: Point): Set[Point] = Set(Point(point.x - 1, point.y - 1), Point(point.x - 1, point.y), Point(point.x - 1, point.y + 1))
 
-  def eastAdjacencies(point: Point): Set[Point] = {
-    val topLeft = Point(point.x + 1, point.y - 1)
-    val top = Point(point.x + 1, point.y)
-    val topRight = Point(point.x + 1, point.y + 1)
-    Set(topLeft, top, topRight)
-  }
+  def eastAdjacencies(point: Point): Set[Point] = Set(Point(point.x + 1, point.y - 1), Point(point.x + 1, point.y), Point(point.x + 1, point.y + 1))
 
   def solve1: Int = countEmptyTiles(play(beginState, 10).elfs)
 
   def incrementWhileChanged(state: State, round: Int): Int = {
-//    println(s"Round=$round")
-    val newState = play(state, 1)
+    val newState = increment(state)
     if (newState.elfs == state.elfs) round else incrementWhileChanged(newState, round + 1)
   }
 
