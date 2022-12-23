@@ -21,13 +21,10 @@ object Day23 extends AocTools(23, 2022) {
 
   case class State(elfs: Set[Point], order: List[String])
   def play(state: State, round: Int): State = {
-//    println(s"Round=$round")
-//    println(state.elfs.size)
-//    printState(state.elfs)
-//    println("")
     if (round == 0) state
     else {
       val (toMoveElfs, doNothingElfs) = state.elfs.partition(elf => Prelude.eightAdjacencies(elf).intersect(state.elfs).nonEmpty)
+      
       val proposals: Set[(Point, Point)] = toMoveElfs.map { elf =>
         val firstValidDirection = state.order.find {
           case "North" => northAdjacencies(elf).intersect(state.elfs).isEmpty
@@ -45,11 +42,14 @@ object Day23 extends AocTools(23, 2022) {
         }
         elf -> proposal
       }
+      
+      val proposalMap = proposals.groupBy(_._2)
 
       val moved = proposals.map {
         case (elf, proposal) =>
-          if (proposals.count(_._2 == proposal) > 1) elf else proposal
+          if (proposalMap(proposal).size > 1) elf else proposal
       }
+
       play(State(moved ++ doNothingElfs, state.order.tail :+ state.order.head), round - 1)
     }
   }
