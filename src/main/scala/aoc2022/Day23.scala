@@ -4,6 +4,8 @@ import aoc2022.Prelude.Point
 import util.AocTools
 import util.InputGetter._
 
+import scala.collection.parallel.CollectionConverters.ImmutableIterableIsParallelizable
+
 object Day23 extends AocTools(23, 2022) {
 //  implicit private val mode: Mode = Example
   implicit private val mode: Mode = Live
@@ -23,9 +25,9 @@ object Day23 extends AocTools(23, 2022) {
   def play(state: State, round: Int): State = {
     if (round == 0) state
     else {
-      val (toMoveElfs, doNothingElfs) = state.elfs.partition(elf => Prelude.eightAdjacencies(elf).intersect(state.elfs).nonEmpty)
+      val (toMoveElfs, doNothingElfs) = state.elfs.par.partition(elf => Prelude.eightAdjacencies(elf).intersect(state.elfs).nonEmpty)
       
-      val proposals: Set[(Point, Point)] = toMoveElfs.map { elf =>
+      val proposals = toMoveElfs.map { elf: Point =>
         val firstValidDirection = state.order.find {
           case "North" => northAdjacencies(elf).intersect(state.elfs).isEmpty
           case "South" => southAdjacencies(elf).intersect(state.elfs).isEmpty
@@ -48,7 +50,7 @@ object Day23 extends AocTools(23, 2022) {
       val moved = proposals.map {
         case (elf, proposal) =>
           if (proposalMap(proposal).size > 1) elf else proposal
-      }
+      }.seq.toSet
 
       play(State(moved ++ doNothingElfs, state.order.tail :+ state.order.head), round - 1)
     }
@@ -104,7 +106,7 @@ object Day23 extends AocTools(23, 2022) {
   def solve1: Int = countEmptyTiles(play(beginState, 10).elfs)
 
   def incrementWhileChanged(state: State, round: Int): Int = {
-    println(s"Round=$round")
+//    println(s"Round=$round")
     val newState = play(state, 1)
     if (newState.elfs == state.elfs) round else incrementWhileChanged(newState, round + 1)
   }
