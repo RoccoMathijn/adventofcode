@@ -23,7 +23,7 @@ object Day24 extends AocTools(24, 2022) {
   val endPos = Point(maxX - 1, maxY)
 
   def traverse(currPositions: Set[Point], blizzards: List[Blizzard], steps: Int, to: Point): (Int, List[Blizzard]) = {
-    if (currPositions.contains(to) || steps > 500) steps -> blizzards
+    if (currPositions.contains(to)) steps -> blizzards
     else {
       val nextSteps = (currPositions.flatMap(Prelude.fourAdjacencies) ++ currPositions)
         .filterNot(p => p != startPos && p.y <= 0)
