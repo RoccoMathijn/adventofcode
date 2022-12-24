@@ -53,13 +53,9 @@ object Day19 extends AocTools(19, 2022) {
     (m1.toList ++ m2.toList).groupMapReduce(_._1)(_._2)(_+_)
   }
 
-  blueprints.foreach(bp => println(s"${bp.id}: ${bp.maxMap}"))
   case class Inventory(robots: Map[RobotType, Int], resources: Map[Resource, Int])
 
   def play(blueprint: Blueprint, gameStates: Set[Inventory], round: Int, maxRounds: Int): Set[Inventory] = {
-    println(s"Blueprint ${blueprint.id}, round $round, gs:${gameStates.size}, enoughForGeode: ${gameStates.count(enoughForGeode(_, blueprint))}")
-//    println(gameStates.maxBy(_.robots(RobotTypes.OreRobot)))
-    
     if (round > maxRounds) gameStates
     else {
       val newGameStates = gameStates.flatMap(inventory => playRound(blueprint, inventory))
@@ -160,12 +156,11 @@ object Day19 extends AocTools(19, 2022) {
 
 
   def solve1: Int =
-    blueprints.par
+    blueprints
       .map(bp => {
         val states = play(bp, Set(startState), 1, 24)
         bp.id -> states.map(_.resources.getOrElse(Resources.Geode, 0)).max
       })
-      .map(x => { println(x); x })
       .map(res => res._1 * res._2)
       .sum
 
